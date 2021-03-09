@@ -1,21 +1,46 @@
 <template>
   <div class="change-password-page">
-    <form action="" class="change-password-page__container">
-      <h2 class="change-password-page__title">Change your password</h2>
-      <div class="change-password-page__inputs-container">
+    <form class="change-password-page__container">
+      <div class="change-password-page__container email" v-if="!isVerified">
+        <h1 class="change-password-page__title">Change password</h1>
         <label>
-          <tr>
-            <td>
-              <input type="text" class="change-password-page__input-email" placeholder="Write your email...">
-              <input type="password" class="change-password-page__input-new-password" placeholder="Write your new password">
-              <input type="password" class="change-password-page__input-repeat-new-password" placeholder="Repeat your new password">
-            </td>
-          </tr>
+          Enter your email for verify
+          <input
+              required
+              type="text"
+              v-model.trim="email"
+              class="change-password-page__input-email"
+              placeholder="Enter your email"
+          >
         </label>
-        <div class="change-password-page__buttons-container">
-          <button class="change-password-page__button-change-password">Change Password</button>
-          <button class="change-password-page__button-back" @click="$router.back()">Back</button>
-        </div>
+        <button @click="checkEmail">SEND</button>
+      </div>
+      <div class="change-password-page__container reset-password" v-if="isVerified && !isChanged">
+        <label>
+          Just enter your new password for reset
+          <input
+              required
+              type="password"
+              v-model="newPassword"
+              class="change-password-page__input-password"
+              placeholder="Enter your new password"
+          >
+        </label>
+        <button @click="resetPassword">Change password</button>
+      </div>
+      <div
+          v-if="isChanged"
+      >
+        <span>Your password successfully changed, <a @click="$router.push({ name: 'authPage' })">Sign in!</a></span>
+      </div>
+      <div class="change-password-page__container-bottom">
+        <button
+            v-if="!isChanged"
+            class="change-password-page__button-back"
+            @click="$router.push({ name: 'authPage' })"
+        >
+          BACK
+        </button>
       </div>
     </form>
   </div>
@@ -23,36 +48,90 @@
 
 <script>
 export default {
-  name: "ChangePasswordPage"
+  name: "ChangePasswordPage",
+
+  data() {
+    return {
+      email: '',
+      token: '',
+      newPassword: '',
+      isVerified: false,
+      isChanged: false
+    }
+  },
+
+  methods: {
+    checkEmail: async function (){
+      // if(this.$v.$invalid) {
+      //   this.$v.$touch()
+      //   return
+      // }
+      let email = this.email
+      this.$store.dispatch('forget_password', { email })
+          .then(() => this.isVerified = true)
+          .catch((err) => console.log(err))
+    },
+
+    resetPassword: async function () {
+      let password = this.newPassword
+      let resetToken = this.$store.state.resetToken
+      this.$store.dispatch('reset_password', { resetToken, password })
+          .then(() => this.isChanged = true)
+          .catch((err) => console.log(err))
+    }
+  }
 }
 </script>
 
 <style scoped>
-.change-password-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
-input {
-  display: flex;
-  height: 40px;
-  width: 300px;
-  margin: 10px;
-  justify-content: flex-end;
+form {
+  position: absolute;
+  display: block;
+  top: 20%;
+  left: 35%;
+}
+
+input[type=text],
+input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 10px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 0.5em;
   text-align: center;
 }
 
 button {
-  width: 200px;
-  height: 40px;
-  margin: 10px;
-  background-color: mediumseagreen;
+  margin: 10px 0;
+  background-color: dodgerblue;
   color: white;
-  font-size: 18px;
-  font-weight: bold;
+  padding: 12px 20px;
   border: transparent;
-  border-radius: 1em;
+  border-radius: 0.5em;
   cursor: pointer;
+  width: 100%;
+  transition: 150ms ease;
+  font-size: 16px;
+  font-weight: bold;
+  outline: none;
+}
+
+button:hover {
+  transition: 150ms ease;
+  opacity: 0.9;
+}
+
+.change-password-page__button-back {
+  padding: 10px 18px;
+  float: left;
+  background-color: #f44336;
 }
 </style>

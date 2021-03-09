@@ -18,8 +18,17 @@
                   v-model.trim="password"
                   type="password"
                   class="authpage__input-password"
+                  id="password"
                   placeholder="PASSWORD"
               >
+              <span @click="showAndHidePassword" class="toggle-password">
+                <span v-if="!marked">
+                <i class="fas fa-eye" />
+              </span>
+              <span v-if="marked">
+                <i class="fas fa-eye-slash" />
+              </span>
+              </span>
             </label>
           <button type="submit" class="authpage__button-login">LOGIN</button>
           <label>
@@ -45,7 +54,7 @@ export default {
     return {
       email: "",
       password: "",
-      error: null
+      marked: null
     }
   },
   validations: {
@@ -60,12 +69,19 @@ export default {
       }
       let email = this.email
       let password = this.password
-      this.error = false
       await this.$store.dispatch('login', { email, password })
           .then(() => this.$router.push('/profile'))
           .catch(err => console.log(err))
+    },
+
+    showAndHidePassword: function () {
+      const input = document.getElementById('password')
+      const typePassword = input.getAttribute('type') === 'password' ?
+          'text' : 'password'
+      this.marked = !this.marked
+      input.setAttribute('type', typePassword)
     }
-  }
+  },
 }
 </script>
 
@@ -87,6 +103,22 @@ input[type=password] {
   box-sizing: border-box;
   border-radius: 0.5em;
   text-align: center;
+}
+
+.toggle-password {
+  position: absolute;
+  margin-top: 21px;
+  margin-left: -30px;
+  width: 20px;
+  height: 25px;
+  box-sizing: border-box;
+  display: inline-block;
+  cursor: pointer;
+  transition: 200ms ease;
+}
+
+.toggle-password:hover {
+  color: dodgerblue;
 }
 
 input[type=checkbox] {

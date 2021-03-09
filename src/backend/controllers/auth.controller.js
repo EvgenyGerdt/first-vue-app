@@ -61,6 +61,7 @@ exports.login = async (req, res, next) => {
     }
 }
 
+// POST Создание токена на восстановление пароля
 exports.forgetPassword = async (req, res, next) => {
     const { email } = req.body
 
@@ -72,15 +73,37 @@ exports.forgetPassword = async (req, res, next) => {
                 const resetToken = user.resetPasswordToken
                 await user.save()
 
-                const resetUrl = `http://localhost:3030/passwordreset/${resetToken}`
-
-                log.info(`Recovery link successfully sent`)
-                res.status(200).json({ success: true, link: resetUrl })
+                log.info(`Recovery token successfully sent`)
+                res.status(200).json({ success: true, token: resetToken })
             }
         })
 
         if(!user) {
-            return next(new ErrorResponse('Email could not be send', 404))
+            return next(new ErrorResponse('Token could not be send', 404))
+        }
+    } catch (err) {
+        return next(new ErrorResponse(err, 500))
+    }
+}
+
+// POST Восстановление пароля по токену
+exports.resetPassword = async (req, res, next) => {
+    const { resetToken, password } = req.body
+
+    try {
+        const user = User.findOne({ resetPasswordToken: resetToken }, async function (err, user) {
+            if(err) {
+                return next(new ErrorResponse(err, 500))
+            } else {
+                await user.update({ password: password })
+
+                log.info(`Password successfully change by user ${user.email}`)
+                res.status(200).json({ success: true, message: 'Password successfully changed' })
+            }
+        })
+
+        if(!user) {
+            return next(new ErrorResponse('User not found', 404))
         }
     } catch (err) {
         return next(new ErrorResponse(err, 500))

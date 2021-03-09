@@ -3,6 +3,7 @@ import App from './App.vue'
 import VueRouter from "vue-router"
 import Vuelidate from "vuelidate";
 import axios from "axios"
+
 import router from './router/router'
 import store from './store/store'
 
