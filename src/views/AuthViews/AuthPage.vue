@@ -1,33 +1,26 @@
 <template>
-  <ValidationObserver v-slot="{ handleSubmit }">
     <div class="authpage">
-      <form @submit.prevent="handleSubmit(login)" class="authpage__container">
+      <form @submit.prevent="login" class="authpage__container">
         <div class="authpage__container">
           <h1 class="authpage__title">Sign In</h1>
-          <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
             <label>
               <input
                   required
-                  v-model="email"
+                  v-model.trim="email"
                   type="text"
                   class="authpage__input-email"
                   placeholder="EMAIL"
               >
-              <span class="authpage__notification-error">{{ errors[0] }}</span>
             </label>
-          </ValidationProvider>
-          <ValidationProvider name="Password" rules="required|max:120|min:6" v-slot="{ errors }">
             <label>
               <input
                   required
-                  v-model="password"
+                  v-model.trim="password"
                   type="password"
                   class="authpage__input-password"
                   placeholder="PASSWORD"
               >
-              <span class="authpage__notification-error">{{ errors[0] }}</span>
             </label>
-          </ValidationProvider>
           <button type="submit" class="authpage__button-login">LOGIN</button>
           <label>
             <input type="checkbox" checked="checked" class="authpage__checkbox-remember"> Remember me
@@ -41,22 +34,33 @@
         </div>
       </form>
     </div>
-  </ValidationObserver>
 </template>
 
 <script>
+import { required, email } from 'vuelidate/lib/validators'
+
 export default {
   name: "AuthPage",
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      error: null
     }
+  },
+  validations: {
+    email: { required, email },
+    password: { required }
   },
   methods: {
     login: async function () {
+      if(this.$v.$invalid) {
+        this.$v.$touch()
+        return
+      }
       let email = this.email
       let password = this.password
+      this.error = false
       await this.$store.dispatch('login', { email, password })
           .then(() => this.$router.push('/profile'))
           .catch(err => console.log(err))
@@ -81,6 +85,8 @@ input[type=password] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  border-radius: 0.5em;
+  text-align: center;
 }
 
 input[type=checkbox] {
@@ -134,7 +140,4 @@ a:hover {
   color: dodgerblue;
 }
 
-.authpage__notification-error {
-  color: #c20a1d;
-}
 </style>

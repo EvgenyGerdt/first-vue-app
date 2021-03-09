@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from "vue-router"
+import Vuelidate from "vuelidate";
 import axios from "axios"
 import router from './router/router'
 import store from './store/store'
-import { ValidationProvider, ValidationObserver } from "vee-validate/dist/vee-validate.full"
 
 Vue.config.productionTip = false
 
@@ -15,8 +15,7 @@ if(token) {
     Vue.prototype.$http.defaults.headers.common['Authorization'] = token
 }
 
-Vue.component('ValidationProvider', ValidationProvider)
-Vue.component('ValidationObserver', ValidationObserver)
+Vue.use(Vuelidate)
 Vue.use(VueRouter)
 
 new Vue({

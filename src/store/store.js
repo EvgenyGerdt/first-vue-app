@@ -46,7 +46,7 @@ export default new Vuex.Store({
         },
         async register({ commit }, user) {
             return new Promise((resolve, reject) => {
-                commit('register_request')
+                commit('auth_request')
                 axios.post(`${apiBase.BASE_API}` + 'auth/register', user)
                     .then(res => {
                         const token = res.data.token

@@ -1,81 +1,118 @@
 <template>
-  <ValidationObserver v-slot="{ handleSubmit }">
-    <div class="registerpage">
-      <form @submit.prevent="handleSubmit(register)" class="registerpage__container">
-        <div class="registerpage__container">
-          <h1 class="registerpage__title">Sign In</h1>
-          <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
-            <label>
-              <input
-                  required
-                  v-model="email"
-                  type="text"
-                  class="registerpage__input-email"
-                  placeholder="Input your email"
-              >
-              <span class="registerpage__notification-error">{{ errors[0] }}</span>
-            </label>
-          </ValidationProvider>
-          <ValidationProvider name="Password" rules="required|max:120|min:6|confirmed" v-slot="{ errors }">
-            <label>
-              <input
-                  required
-                  v-model="password"
-                  type="password"
-                  class="registerpage__input-password"
-                  placeholder="Input your password"
-              >
-              <span class="registerpage__notification-error">{{ errors[0] }}</span>
-            </label>
-          </ValidationProvider>
-          <ValidationProvider name="ConfirmPassword" rules="target:Password" v-slot="{ errors }">
-            <label>
-              <input
-                  type="password"
-                  class="registerpage__input-password-confirm"
-                  placeholder="Confirm your password"
-              >
-              <span class="registerpage__notification-error">{{ errors[0] }}</span>
-            </label>
-          </ValidationProvider>
-          <button type="submit" class="registerpage__button-login">SIGN UP</button>
+  <div class="registerpage">
+    <form @submit.prevent="register" class="registerpage__container">
+      <div class="registerpage__container">
+        <h1 class="registerpage__title">Sign In</h1>
+        <div
+            class="registerpage__container-input"
+            :class="{'error': $v.email.$error}"
+        >
+          <label>
+            <input
+                required
+                type="text"
+                class="registerpage__input-email"
+                placeholder="Input your email"
+                autocomplete="off"
+                @change="setEmail($event.target.value)"
+            >
+          </label>
         </div>
-        <div class="registerpage__container-bottom">
-          <button
-              type="button"
-              class="registerpage__button-back"
-              @click="$router.push({ name: 'homePage' })"
-          >
-            BACK
-          </button>
-          <span class="registerpage__link-forgot-password">
-            Forgot <a @click="$router.push({ name: 'changePasswordPage' })">password?</a>
-          </span>
+        <div class="error" v-if="!$v.email.required && $v.email.$dirty">Please, enter your email</div>
+        <div class="error" v-if="!$v.email.email && $v.email.$dirty">Please, enter correct email</div>
+        <div
+            class="registrationpage__container-input"
+            :class="{'error': $v.password.$error}"
+        >
+          <label>
+            <input
+                required
+                type="password"
+                class="registerpage__input-password"
+                placeholder="Input your password"
+                autocomplete="new-password"
+                @change="setPassword($event.target.value)"
+            >
+          </label>
         </div>
-      </form>
-    </div>
-  </ValidationObserver>
+        <div class="error" v-if="!$v.password.required && $v.password.$dirty">Please, enter your password</div>
+        <div class="error" v-if="!$v.password.minLength && $v.password.$dirty">Password must have at least 6 characters</div>
+        <div class="error" v-if="!$v.password.maxLength">Password too large</div>
+        <div
+            class="registerpage__container-input"
+            :class="{'error': $v.confirmPassword.$error}"
+        >
+          <label>
+            <input
+                type="password"
+                name="confirm__pass"
+                class="registerpage__input-password-confirm"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+                @change="setConfirmPassword($event.target.value)"
+            >
+          </label>
+        </div>
+        <div class="error" v-if="!$v.confirmPassword.sameAsPassword">Password confirmation does not match</div>
+        <button type="submit" class="registerpage__button-login">SIGN UP</button>
+      </div>
+      <div class="registerpage__container-bottom">
+        <button
+            type="button"
+            class="registerpage__button-back"
+            @click="$router.push({ name: 'homePage' })"
+        >
+          BACK
+        </button>
+        <span>You already have account? Just <a @click="$router.push({name: 'authPage'})">Sign in!</a></span  >
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
+import { required, maxLength, minLength, email, sameAs } from 'vuelidate/lib/validators'
+
 export default {
   name: "RegistrationPage",
-  data() {
-    return {
-      email: '',
-      password: '',
-      confirmPassword: ''
-    }
+
+  data: () => ({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  }),
+
+  validations: {
+    email: { required, email },
+    password: { required, minLength: minLength(6), maxLength: maxLength(1024) },
+    confirmPassword: { sameAsPassword: sameAs('password') },
   },
+
   methods: {
+    setEmail(value) {
+      this.email = value
+      this.$v.email.$touch()
+    },
+
+    setPassword(value) {
+      this.password = value
+      this.$v.password.$touch()
+    },
+
+    setConfirmPassword(value) {
+      this.confirmPassword = value
+      this.$v.confirmPassword.$touch()
+    },
+
     register: async function () {
       let email = this.email
       let password = this.password
+      this.error = false
       await this.$store.dispatch('register', {email, password})
           .then(() => this.$router.push('/profile'))
           .catch((err) => console.log(err))
     }
-  }
+  },
 }
 </script>
 
@@ -95,6 +132,8 @@ input[type=password] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  border-radius: 0.5em;
+  text-align: center;
 }
 
 input[type=checkbox] {
@@ -122,9 +161,6 @@ button:hover {
 }
 
 .registerpage__button-back {
-  width: auto;
-  padding: 10px 18px;
-  float: left;
   background-color: #f44336;
 }
 
@@ -132,11 +168,6 @@ button:hover {
 .registerpage__container-bottom {
   padding: 16px;
   width: 50%;
-}
-
-span.registerpage__link-forgot-password {
-  float: right;
-  padding-top: 16px;
 }
 
 a {
@@ -148,7 +179,17 @@ a:hover {
   color: dodgerblue;
 }
 
-.registerpage__notification-error {
+small {
+  color: #c20a1d;
+  margin: 0;
+}
+
+.registerpage__container-input.error input {
+  border: 1px solid #c20a1d;
+}
+
+.error {
   color: #c20a1d;
 }
+
 </style>
