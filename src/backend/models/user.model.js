@@ -39,14 +39,19 @@ const UserSchema = new Schema({
 })
 
 UserSchema.pre("save", async function(next) {
-        if(!this.isModified("password")) {
-            next()
+    if(!this.isModified("password")) {
+        next()
     }
 
     const salt = await bcrypt.genSalt(SALT_PORTION)
     this.password = await bcrypt.hash(this.password, salt)
     next()
 })
+
+UserSchema.methods.getHashedPassword = async function(password) {
+    const salt = await bcrypt.genSalt(SALT_PORTION)
+    return await bcrypt.hash(password, salt)
+}
 
 UserSchema.methods.matchPasswords = async function(password) {
     return await bcrypt.compare(password, this.password)
@@ -71,7 +76,7 @@ UserSchema.methods.getResetPasswordToken = async function () {
         .digest('hex')
 
     this.resetPasswordExpire = Date.now() + 10 * (60 * 1000)
-    return resetToken
+    return this.resetPasswordToken
 }
 
 const User = mongoose.model("User", UserSchema)

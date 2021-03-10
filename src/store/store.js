@@ -9,7 +9,7 @@ export default new Vuex.Store({
     state: {
         status: '',
         token: localStorage.getItem('token') || '',
-        user: {}
+        user: {},
     },
     mutations: {
         auth_request(state) {
@@ -21,6 +21,17 @@ export default new Vuex.Store({
             state.user = user
         },
         auth_error(state) {
+            state.status = 'error'
+            state.token = null
+            state.user = null
+        },
+
+        logout(state) {
+            state.status = 'success'
+            state.token = null
+            state.user = null
+        },
+        logout_error(state) {
             state.status = 'error'
         },
 
@@ -40,6 +51,8 @@ export default new Vuex.Store({
         },
         reset_password_success(state) {
             state.status = 'success'
+            state.resetToken = null
+            state.user = null
         },
         reset_password_error(state) {
             state.status = 'error'
@@ -64,6 +77,16 @@ export default new Vuex.Store({
                         reject(err)
                     })
             }))
+        },
+
+        async logout({ commit }) {
+          return new Promise(() => {
+                  try {
+                      commit('logout')
+                  } catch (err) {
+                      commit('logout_error')
+                  }
+          })
         },
 
         async register({ commit }, user) {
@@ -93,15 +116,13 @@ export default new Vuex.Store({
                 axios.post(`${API_ENDPOINTS.BASE_API.FORGET_PASSWORD}`, email)
                     .then(res => {
                         const resetToken = res.data.token
-                        localStorage.setItem('resetToken', resetToken)
                         axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
                         axios.defaults.headers.common['Authorization'] = resetToken
-                        commit('forget_password_success')
+                        commit('forget_password_success', resetToken)
                         resolve(res)
                     })
                     .catch(err => {
                         commit('verify_error')
-                        localStorage.removeItem('resetToken')
                         reject(err)
                     })
             }))

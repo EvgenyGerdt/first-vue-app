@@ -70,7 +70,7 @@ exports.forgetPassword = async (req, res, next) => {
             if(err) {
                 return next(new ErrorResponse(err, 500))
             } else {
-                const resetToken = user.resetPasswordToken
+                const resetToken = await user.getResetPasswordToken()
                 await user.save()
 
                 log.info(`Recovery token successfully sent`)
@@ -95,7 +95,7 @@ exports.resetPassword = async (req, res, next) => {
             if(err) {
                 return next(new ErrorResponse(err, 500))
             } else {
-                await user.update({ password: password })
+                await user.update({ password: await user.getHashedPassword(password) })
 
                 log.info(`Password successfully change by user ${user.email}`)
                 res.status(200).json({ success: true, message: 'Password successfully changed' })

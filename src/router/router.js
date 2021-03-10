@@ -12,22 +12,34 @@ const router = new VueRouter({
         {
             path: '/',
             component: HomePage,
-            name: 'homePage'
+            name: 'homePage',
+            meta: {
+                requiresUnauthorized: true
+            }
         },
         {
             path: '/login',
             component: AuthPage,
-            name: 'authPage'
+            name: 'authPage',
+            meta: {
+                requiresUnauthorized: true
+            }
         },
         {
             path: '/registration',
             component: RegistrationPage,
-            name: 'registrationPage'
+            name: 'registrationPage',
+            meta: {
+                requiresUnauthorized: true
+            }
         },
         {
             path: '/change_password',
             component: ChangePasswordPage,
-            name: 'changePasswordPage'
+            name: 'changePasswordPage',
+            meta: {
+                requiresUnauthorized: true
+            }
         },
         {
             path: '/profile',
@@ -47,6 +59,12 @@ router.beforeEach((to, from, next) => {
             return
         }
         next('/login')
+    } else if(to.matched.some(record => record.meta.requiresUnauthorized)) {
+        if(!store.getters.isLoggedIn) {
+            next()
+            return
+        }
+        next('/profile')
     } else {
         next()
     }
