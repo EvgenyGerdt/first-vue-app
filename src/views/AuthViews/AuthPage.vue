@@ -1,7 +1,13 @@
 <template>
-  <div class="authpage">
+  <div>
+    <button type="button" class="authpage__button-back" @click="$router.push({ name: 'homePage' })">
+      <i class="fas fa-chevron-left"></i> BACK
+    </button>
     <form @submit.prevent="login" class="authpage__container">
       <div class="authpage__container">
+        <span class="authpage__icon">
+          <i class="fas fa-user fa-7x"></i>
+        </span>
         <h1 class="authpage__title">Sign In</h1>
         <div
             class="authpage__input-container"
@@ -47,13 +53,14 @@
         <div class="error" v-if="!$v.password.required && $v.password.$dirty">Please, enter your password</div>
         <div class="error" v-if="!authStatus && authStatus!==null">Invalid password or email</div>
         <div class="error"></div>
-        <button type="submit" class="authpage__button-login">LOGIN</button>
+        <button type="submit" class="authpage__button-login">
+          LOGIN <i class="fas fa-sign-in-alt"></i>
+        </button>
         <label>
           <input type="checkbox" checked="checked" class="authpage__checkbox-remember"> Remember me
         </label>
       </div>
       <div class="authpage__container-bottom">
-        <button type="button" class="authpage__button-back" @click="$router.push({ name: 'homePage' })">BACK</button>
         <span class="authpage__link-forgot-password">
           Forgot <a @click="$router.push({name: 'changePasswordPage'})">password?</a>
         </span>
@@ -123,11 +130,28 @@ export default {
 </script>
 
 <style scoped>
+html {
+  overflow: hidden;
+}
+
+body {
+  display: flex!important;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 form {
-  position: absolute;
-  display: block;
-  top: 10%;
-  left: 35%;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+}
+
+.authpage__container{
+  position: relative;
+  margin: 50px auto;
+  padding: 5px 20px;
+  background: #fff;
+  border-radius: 20px;
 }
 
 input[type=text],
@@ -136,30 +160,11 @@ input[type=password] {
   padding: 12px 20px;
   margin: 10px 0;
   display: inline-block;
+  font-size: 16px;
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 0.5em;
   text-align: center;
-}
-
-.toggle-password {
-  position: absolute;
-  margin-top: 21px;
-  margin-left: -30px;
-  width: 20px;
-  height: 25px;
-  box-sizing: border-box;
-  display: inline-block;
-  cursor: pointer;
-  transition: 200ms ease;
-}
-
-.toggle-password:hover {
-  color: dodgerblue;
-}
-
-input[type=checkbox] {
-  margin: 10px 0;
 }
 
 button {
@@ -183,21 +188,32 @@ button:hover {
 }
 
 .authpage__button-back {
+  position: absolute;
   width: auto;
-  padding: 10px 18px;
-  float: left;
-  background-color: #f44336;
+  left: 20px;
+  top: 10px;
+  font-size: 40px;
+  background: transparent;
+  color: #d9d9d9
 }
 
-.authpage__container,
-.authpage__container-bottom {
-  padding: 16px;
-  width: 50%;
+.authpage__button-back:hover {
+  color: dodgerblue;
 }
 
-span.authpage__link-forgot-password {
-  float: right;
-  padding-top: 16px;
+.toggle-password {
+  position: absolute;
+  margin-top: 21px;
+  margin-left: -30px;
+  width: 20px;
+  height: 25px;
+  box-sizing: border-box;
+  display: inline-block;
+  cursor: pointer;
+  transition: 200ms ease;
+}
+.toggle-password:hover {
+  color: dodgerblue;
 }
 
 a {
@@ -216,5 +232,4 @@ a:hover {
 .error {
   color: #c20a1d;
 }
-
 </style>
