@@ -1,48 +1,65 @@
 <template>
-    <div class="authpage">
-      <form @submit.prevent="login" class="authpage__container">
-        <div class="authpage__container">
-          <h1 class="authpage__title">Sign In</h1>
-            <label>
-              <input
-                  required
-                  v-model.trim="email"
-                  type="text"
-                  class="authpage__input-email"
-                  placeholder="EMAIL"
-              >
-            </label>
-            <label>
-              <input
-                  required
-                  v-model.trim="password"
-                  type="password"
-                  class="authpage__input-password"
-                  id="password"
-                  placeholder="PASSWORD"
-              >
-              <span @click="showAndHidePassword" class="toggle-password">
-                <span v-if="!marked">
+  <div class="authpage">
+    <form @submit.prevent="login" class="authpage__container">
+      <div class="authpage__container">
+        <h1 class="authpage__title">Sign In</h1>
+        <div
+            class="authpage__input-container"
+            :class="{'error': $v.email.$error}"
+        >
+          <label>
+            <input
+                required
+                v-model.trim="email"
+                type="text"
+                class="authpage__input-email"
+                placeholder="EMAIL"
+                @change="setEmail($event.target.value)"
+            >
+          </label>
+        </div>
+        <div class="error" v-if="!$v.email.required && $v.email.$dirty">Please, enter your email</div>
+        <div class="error" v-if="!$v.email.email && $v.email.$dirty">Please, enter correct email</div>
+        <div
+            class="authpage__input-container"
+            :class="{'error': $v.password.$error}"
+        >
+          <label>
+            <input
+                required
+                v- model.trim="password"
+                type="password"
+                class="authpage__input-password"
+                id="password"
+                placeholder="PASSWORD"
+                @change="setPassword($event.target.value)"
+            >
+            <span @click="showAndHidePassword" class="toggle-password">
+              <span v-if="!marked">
                 <i class="fas fa-eye" />
               </span>
               <span v-if="marked">
                 <i class="fas fa-eye-slash" />
               </span>
-              </span>
-            </label>
-          <button type="submit" class="authpage__button-login">LOGIN</button>
-          <label>
-            <input type="checkbox" checked="checked" class="authpage__checkbox-remember"> Remember me
+            </span>
           </label>
         </div>
-        <div class="authpage__container-bottom">
-          <button type="button" class="authpage__button-back" @click="$router.push({ name: 'homePage' })">BACK</button>
-          <span class="authpage__link-forgot-password">
-            Forgot <a @click="$router.push({name: 'changePasswordPage'})">password?</a>
-          </span>
-        </div>
-      </form>
-    </div>
+        <div class="error" v-if="!$v.password.required && $v.password.$dirty">Please, enter your password</div>
+        <div class="error" v-if="!authStatus && authStatus!==null">Invalid password or email</div>
+        <div class="error"></div>
+        <button type="submit" class="authpage__button-login">LOGIN</button>
+        <label>
+          <input type="checkbox" checked="checked" class="authpage__checkbox-remember"> Remember me
+        </label>
+      </div>
+      <div class="authpage__container-bottom">
+        <button type="button" class="authpage__button-back" @click="$router.push({ name: 'homePage' })">BACK</button>
+        <span class="authpage__link-forgot-password">
+          Forgot <a @click="$router.push({name: 'changePasswordPage'})">password?</a>
+        </span>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -54,7 +71,8 @@ export default {
     return {
       email: "",
       password: "",
-      marked: null
+      marked: null,
+      authStatus: null
     }
   },
   validations: {
@@ -62,6 +80,16 @@ export default {
     password: { required }
   },
   methods: {
+    setEmail(value) {
+      this.email = value
+      this.$v.email.$touch()
+    },
+
+    setPassword(value) {
+      this.password = value
+      this.$v.password.$touch()
+    },
+
     login: async function () {
       if(this.$v.$invalid) {
         this.$v.$touch()
@@ -70,8 +98,14 @@ export default {
       let email = this.email
       let password = this.password
       await this.$store.dispatch('login', { email, password })
-          .then(() => this.$router.push('/profile'))
-          .catch(err => console.log(err))
+          .then(() => {
+            this.authStatus = true
+            this.$router.push('/profile')
+          })
+          .catch(err => {
+            this.authStatus = false
+            console.log(err)
+          })
     },
 
     showAndHidePassword: function () {
@@ -170,6 +204,14 @@ a {
 a:hover {
   transition: 300ms ease;
   color: dodgerblue;
+}
+
+.authpage__input-container.error input {
+  border: 1px solid #c20a1d;
+}
+
+.error {
+  color: #c20a1d;
 }
 
 </style>

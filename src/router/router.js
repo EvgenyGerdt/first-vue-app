@@ -22,7 +22,8 @@ const router = new VueRouter({
             component: AuthPage,
             name: 'authPage',
             meta: {
-                requiresUnauthorized: true
+                requiresUnauthorized: true,
+                title: 'Login'
             }
         },
         {

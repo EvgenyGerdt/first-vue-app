@@ -5,12 +5,22 @@ import API_ENDPOINTS from '../../config/api.config'
 
 Vue.use(Vuex)
 
+const defaultState = () => {
+    return {
+        status: '',
+        token: '',
+        user: {},
+        resetToken: ''
+    }
+}
+
 export default new Vuex.Store({
     state: {
         status: '',
         token: localStorage.getItem('token') || '',
         user: {},
     },
+
     mutations: {
         auth_request(state) {
             state.status = 'loading'
@@ -56,6 +66,10 @@ export default new Vuex.Store({
         },
         reset_password_error(state) {
             state.status = 'error'
+        },
+
+        reset_state(state) {
+            Object.assign(state, defaultState())
         }
     },
     actions: {
@@ -81,11 +95,7 @@ export default new Vuex.Store({
 
         async logout({ commit }) {
           return new Promise(() => {
-                  try {
-                      commit('logout')
-                  } catch (err) {
-                      commit('logout_error')
-                  }
+              commit('logout')
           })
         },
 
@@ -133,6 +143,7 @@ export default new Vuex.Store({
                 commit('reset_password_request')
                 axios.post(`${API_ENDPOINTS.BASE_API.RESET_PASSWORD}`, data)
                     .then(res => {
+                        localStorage.removeItem('resetToken')
                         axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
                         commit('reset_password_success')
                         resolve(res)
@@ -142,6 +153,10 @@ export default new Vuex.Store({
                         reject(err)
                     })
             }))
+        },
+
+        async reset_state({commit}) {
+            commit('reset_state')
         }
     },
     getters: {

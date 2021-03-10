@@ -1,8 +1,8 @@
 <template>
   <div class="change-password-page">
     <form class="change-password-page__container">
+      <h1 class="change-password-page__title">Change password</h1>
       <div class="change-password-page__container email" v-if="!isVerified">
-        <h1 class="change-password-page__title">Change password</h1>
         <label>
           Enter your email for verify
           <input
@@ -17,7 +17,7 @@
       </div>
       <div class="change-password-page__container reset-password" v-if="isVerified && !isChanged">
         <label>
-          Just enter your new password for reset
+          Just enter new password
           <input
               required
               type="password"
@@ -37,7 +37,7 @@
         <button
             v-if="!isChanged"
             class="change-password-page__button-back"
-            @click="$router.push({ name: 'authPage' })"
+            @click="resetState"
         >
           BACK
         </button>
@@ -78,6 +78,12 @@ export default {
       this.$store.dispatch('reset_password', { resetToken, password })
           .then(() => this.isChanged = true)
           .catch((err) => console.log(err))
+    },
+
+    resetState: function() {
+      this.$store.dispatch('reset_state')
+          .then(() => this.$router.push({ name: 'authPage' }))
+          .catch((err) => console.log(err))
     }
   }
 }
@@ -94,7 +100,7 @@ form {
   position: absolute;
   display: block;
   top: 20%;
-  left: 35%;
+  left: 41%;
 }
 
 input[type=text],
@@ -102,7 +108,7 @@ input[type=password] {
   width: 100%;
   padding: 12px 20px;
   margin: 10px 0;
-  display: inline-block;
+  display: flex;
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 0.5em;
@@ -110,12 +116,14 @@ input[type=password] {
 }
 
 button {
+  display: flex;
   margin: 10px 0;
   background-color: dodgerblue;
   color: white;
   padding: 12px 20px;
   border: transparent;
   border-radius: 0.5em;
+  justify-content: center;
   cursor: pointer;
   width: 100%;
   transition: 150ms ease;
