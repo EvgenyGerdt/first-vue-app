@@ -27,7 +27,7 @@
           <label>
             <input
                 required
-                v- model.trim="password"
+                model.trim="password"
                 type="password"
                 class="authpage__input-password"
                 id="password"
@@ -67,6 +67,7 @@ import { required, email } from 'vuelidate/lib/validators'
 
 export default {
   name: "AuthPage",
+
   data() {
     return {
       email: "",
@@ -75,10 +76,12 @@ export default {
       authStatus: null
     }
   },
+
   validations: {
     email: { required, email },
     password: { required }
   },
+
   methods: {
     setEmail(value) {
       this.email = value

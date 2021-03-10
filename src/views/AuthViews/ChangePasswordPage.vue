@@ -62,10 +62,6 @@ export default {
 
   methods: {
     checkEmail: async function (){
-      // if(this.$v.$invalid) {
-      //   this.$v.$touch()
-      //   return
-      // }
       let email = this.email
       this.$store.dispatch('forget_password', { email })
           .then(() => this.isVerified = true)
@@ -142,4 +138,14 @@ button:hover {
   float: left;
   background-color: #f44336;
 }
+
+.change-password-page__container.email.error input,
+.change-password-page__container.reset-password.error input{
+  border: 1px solid #c20a1d;
+}
+
+.error {
+  color: #c20a1d;
+}
+
 </style>

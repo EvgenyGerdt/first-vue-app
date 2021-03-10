@@ -95,6 +95,7 @@ export default new Vuex.Store({
 
         async logout({ commit }) {
           return new Promise(() => {
+              localStorage.removeItem('token')
               commit('logout')
           })
         },
