@@ -30,6 +30,14 @@ const UserSchema = new Schema({
         minlength: 6,
         select: false
     },
+
+    username: {
+        type: String,
+        required: false,
+        maxlength: 50,
+        minlength: 3
+    },
+
     created: {
         type: Date,
         default: Date.now

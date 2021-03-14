@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" class="authpage__button-back" @click="$router.push({ name: 'homePage' })">
-      <i class="fas fa-chevron-left"></i> BACK
+      <i class="fas fa-chevron-left authpage__icon"></i> BACK
     </button>
     <form @submit.prevent="login" class="authpage__container">
       <div class="authpage__container">
@@ -40,6 +40,9 @@
                 placeholder="PASSWORD"
                 @change="setPassword($event.target.value)"
             >
+            <span class="focus-border">
+              <i></i>
+            </span>
             <span @click="showAndHidePassword" class="toggle-password">
               <span v-if="!marked">
                 <i class="fas fa-eye" />
@@ -61,6 +64,9 @@
         </label>
       </div>
       <div class="authpage__container-bottom">
+        <span class="authpage__link-create-account">
+          Don't have account? <a @click="$router.push({ name: 'registrationPage' })">Create here!</a>
+        </span>
         <span class="authpage__link-forgot-password">
           Forgot <a @click="$router.push({name: 'changePasswordPage'})">password?</a>
         </span>
@@ -146,7 +152,7 @@ form {
   max-width: 500px;
 }
 
-.authpage__container{
+.authpage__container {
   position: relative;
   margin: 50px auto;
   padding: 5px 20px;
@@ -165,6 +171,13 @@ input[type=password] {
   box-sizing: border-box;
   border-radius: 0.5em;
   text-align: center;
+  outline: none;
+  transition: 0.4s;
+}
+
+input[type=text]:focus,
+input[type=password]:focus {
+  border: 1px solid dodgerblue;
 }
 
 button {
@@ -198,6 +211,7 @@ button:hover {
 }
 
 .authpage__button-back:hover {
+  transform: translateX(-20px);
   color: dodgerblue;
 }
 
@@ -231,5 +245,10 @@ a:hover {
 
 .error {
   color: #c20a1d;
+}
+
+.authpage__link-forgot-password,
+.authpage__link-create-account {
+  margin: 10px;
 }
 </style>
