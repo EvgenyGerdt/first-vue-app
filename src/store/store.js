@@ -9,8 +9,9 @@ const defaultState = () => {
     return {
         status: '',
         token: '',
-        user: {},
-        resetToken: ''
+        userId: '',
+        resetToken: '',
+        user: {}
     }
 }
 
@@ -18,33 +19,47 @@ export default new Vuex.Store({
     state: {
         status: '',
         token: localStorage.getItem('token') || '',
-        user: {},
+        userId: localStorage.getItem('id'),
+        resetToken: '',
+        user: {}
     },
 
     mutations: {
+        // AUTH USER MUTATIONS
         auth_request(state) {
             state.status = 'loading'
         },
-        auth_success(state, token, user) {
+        auth_success(state, token) {
             state.status = 'success'
             state.token = token
-            state.user = user
         },
         auth_error(state) {
             state.status = 'error'
             state.token = null
-            state.user = null
+            state.userId = null
         },
 
+        // GET USER MUTATIONS
+        get_user_success(state, user) {
+            state.status = 'success'
+            state.user = user
+        },
+        get_user_error(state) {
+            state.status = 'success'
+            state.user = {}
+        },
+
+        // LOGOUT USER MUTATIONS
         logout(state) {
             state.status = 'success'
             state.token = null
-            state.user = null
+            state.userId = null
         },
         logout_error(state) {
             state.status = 'error'
         },
 
+        // FORGET PASSWORD MUTATIONS
         forget_password_request(state) {
             state.status = 'loading'
         },
@@ -56,18 +71,20 @@ export default new Vuex.Store({
             state.status = 'error'
         },
 
+        // RESET PASSWORD MUTATIONS
         reset_password_request(state) {
             state.status = 'loading'
         },
         reset_password_success(state) {
             state.status = 'success'
             state.resetToken = null
-            state.user = null
+            state.userId = null
         },
         reset_password_error(state) {
             state.status = 'error'
         },
 
+        // Сбрасываем state
         reset_state(state) {
             Object.assign(state, defaultState())
         }
@@ -79,11 +96,12 @@ export default new Vuex.Store({
                 axios.post(`${API_ENDPOINTS.BASE_API.LOGIN}`, user)
                     .then(res => {
                         const token = res.data.token
-                        const user = res.data.user
+                        const userId = res.data.user._id
                         localStorage.setItem('token', token)
+                        localStorage.setItem('id', userId)
                         axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
                         axios.defaults.headers.common['Authorization'] = token
-                        commit('auth_success', token, user)
+                        commit('auth_success', token)
                         resolve(res)
                     }).catch(err => {
                         commit('auth_error')
@@ -96,6 +114,7 @@ export default new Vuex.Store({
         async logout({ commit }) {
           return new Promise(() => {
               localStorage.removeItem('token')
+              localStorage.removeItem('id')
               commit('logout')
           })
         },
@@ -156,12 +175,44 @@ export default new Vuex.Store({
             }))
         },
 
+        async check_email({ commit }, email) {
+            return new Promise(((resolve, reject) => {
+                commit('check_email')
+                axios.post(`${API_ENDPOINTS.BASE_API.CHECK_EMAIL}`, email)
+                    .then(res => {
+                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+                        reject(res)
+                    })
+                    .catch(info => {
+                        resolve(info)
+                    })
+            }))
+        },
+
+        async get_user({ commit }, id) {
+            return new Promise(((resolve, reject) => {
+                commit('get_user')
+                axios.post(`${API_ENDPOINTS.BASE_API.GET_USER_DATA}`, id)
+                    .then(res => {
+                        let user = res.data.user
+                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+                        commit('get_user_success', user)
+                        resolve(res)
+                    })
+                    .catch(err => {
+                        commit('get_user_error')
+                        reject(err)
+                    })
+            }))
+        },
+
         async reset_state({commit}) {
             commit('reset_state')
         }
     },
     getters: {
         isLoggedIn: state => !!state.token,
-        authStatus: state => state.status
+        authStatus: state => state.status,
+        userId: state => state.userId
     }
 })

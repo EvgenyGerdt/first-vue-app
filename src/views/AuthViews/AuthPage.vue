@@ -8,7 +8,7 @@
         <span class="authpage__icon">
           <i class="fas fa-user fa-7x"></i>
         </span>
-        <h1 class="authpage__title">Sign In</h1>
+        <h1 class="authpage__title">Log In</h1>
         <div
             class="authpage__input-container"
             :class="{'error': $v.email.$error}"

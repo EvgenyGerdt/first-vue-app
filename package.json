@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve --port 3031",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "start": "concurrently \"npm:server\" \"npm:serve\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.34",

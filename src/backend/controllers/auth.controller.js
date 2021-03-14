@@ -110,6 +110,49 @@ exports.resetPassword = async (req, res, next) => {
     }
 }
 
+// GET Получаем данные пользователя после авторизации / регистрации
+exports.getUserData = async (req, res, next) => {
+    const { userId } = req.body
+
+    try {
+        const user = User.findOne({ _id: userId }, async function (err, user) {
+            if(err) {
+                return next(new ErrorResponse(err, 500))
+            } else {
+                log.info(`✅ User data has been sent: \n ${user}`)
+                res.status(200).json({ user: user })
+            }
+        })
+
+        if(!user) {
+            return next(new ErrorResponse('Database error, user not found', 500))
+        }
+    } catch (err) {
+        return next(new ErrorResponse(err, 500))
+    }
+}
+
+// GET Проверяем наличие пользователя
+exports.checkUserExists = async (req, res, next) => {
+    const { email } = req.body
+
+    try {
+        User.findOne({ email: email }, async function (err, user) {
+            if(err) {
+                return next(new ErrorResponse(err, 500))
+            } else if (user) {
+                log.err('User already exists')
+                res.status(409).json({ message: 'User already exists' })
+            } else {
+                log.info(`Email available for registration`)
+                res.status(200).json({ message: 'Email address available for registration' })
+            }
+        })
+    } catch (err) {
+        return next(new ErrorResponse(err, 500))
+    }
+}
+
 const sendToken = async (user, statusCode, res) => {
     const token = await user.getSignedJwtToken()
     log.info(`✅ User connected to server: \n ${user}`)

@@ -20,6 +20,7 @@
         </div>
         <div class="error" v-if="!$v.email.required && $v.email.$dirty">Please, enter your email</div>
         <div class="error" v-if="!$v.email.email && $v.email.$dirty">Please, enter correct email</div>
+        <div class="error" v-if="!isEmailExists && isEmailExists!==null">This email address already exists</div>
         <div
             class="registrationpage__container-input"
             :class="{'error': $v.password.$error}"
@@ -79,7 +80,9 @@ export default {
   data: () => ({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    authStatus: null,
+    isEmailExists: null
   }),
 
   validations: {
@@ -92,6 +95,24 @@ export default {
     setEmail(value) {
       this.email = value
       this.$v.email.$touch()
+      if(value !== '') {
+        this.checkEmail(value)
+      } else {
+        this.isEmailExists = true
+      }
+    },
+
+    async checkEmail(value) {
+      let email = value
+      this.error = false
+      await this.$store.dispatch('check_email', {email})
+          .then(() => {
+            this.isEmailExists = false
+          })
+          .catch((err) => {
+            this.isEmailExists = true
+            console.log(err)
+          })
     },
 
     setPassword(value) {
@@ -109,9 +130,15 @@ export default {
       let password = this.password
       this.error = false
       await this.$store.dispatch('register', {email, password})
-          .then(() => this.$router.push('/profile'))
-          .catch((err) => console.log(err))
-    }
+          .then(() => {
+            this.authStatus = true
+            this.$router.push('/profile')
+          })
+          .catch((err) => {
+            this.authStatus = false
+            console.log(err)
+          })
+    },
   },
 }
 </script>
