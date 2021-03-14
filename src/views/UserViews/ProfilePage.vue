@@ -7,7 +7,25 @@
       <i class="fas fa-chevron-left"></i> Logout
     </button>
     <div class="profilepage__container">
-      <h1>{{this.email}}</h1>
+      <div class="profilepage__userdata-container">
+        <h1 class="profilepage__userdata-title">Your profile</h1>
+
+        <div class="profilepage__userdata-info">
+          <h3 class="profilepage__userdata-email">
+            {{ this.email }}
+          </h3>
+        </div>
+      </div>
+      <div class="profilepage__functional-blocks">
+        <div class="profilepage__edit-user block">
+          <h3>Edit your profile</h3>
+          <i class="fas fa-user-edit fa-5x"></i>
+        </div>
+        <div class="profilepage__add-to-friend block">
+          <h3>Find friends</h3>
+          <i class="fas fa-user-friends fa-5x"></i>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -81,7 +99,36 @@ button {
 
 button:hover {
   transition: 150ms ease;
+  transform: translateX(-20px);
   opacity: 0.9;
+}
+
+.profilepage__container {
+  height: 100vh;
+  width: 82%;
+  box-shadow: 1px 1px 18px grey;
+  float: right;
+}
+
+.block {
+  display: inline-block;
+  margin: 20px;
+  padding: 12px 14px;
+  max-width: 300px;
+  min-width: 220px;
+  height: 220px;
+  box-shadow: 1px 1px 6px grey;
+  border: transparent;
+  border-radius: 1em;
+  text-align: center;
+  cursor: pointer;
+  transition: 300ms ease;
+}
+
+.block:hover {
+  transition: 300ms ease;
+  box-shadow: 1px 1px 6px dodgerblue;
+  transform: translateY(-20px);
 }
 
 </style>

@@ -141,7 +141,7 @@ exports.checkUserExists = async (req, res, next) => {
             if(err) {
                 return next(new ErrorResponse(err, 500))
             } else if (user) {
-                log.err('User already exists')
+                log.error('User already exists')
                 res.status(409).json({ message: 'User already exists' })
             } else {
                 log.info(`Email available for registration`)
