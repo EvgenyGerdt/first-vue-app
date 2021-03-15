@@ -15,6 +15,11 @@ const defaultState = () => {
     }
 }
 
+const instance = axios.create({
+    timeout: 1000,
+    headers: {'Access-Control-Allow-Origin': '*'}
+})
+
 export default new Vuex.Store({
     state: {
         status: '',
@@ -26,85 +31,87 @@ export default new Vuex.Store({
 
     mutations: {
         // AUTH USER MUTATIONS
-        auth_request(state) {
+        AUTH_REQUEST(state) {
             state.status = 'loading'
         },
-        auth_success(state, token) {
+        AUTH_SUCCESS(state, token) {
             state.status = 'success'
             state.token = token
         },
-        auth_error(state) {
+        AUTH_ERROR(state) {
             state.status = 'error'
             state.token = null
             state.userId = null
         },
 
         // GET USER MUTATIONS
-        get_user_success(state, user) {
+        GET_USER_REQUEST(state) {
+          state.status = 'loading'
+        },
+        GET_USER_SUCCESS(state, user) {
             state.status = 'success'
             state.user = user
         },
-        get_user_error(state) {
+        GET_USER_ERROR(state) {
             state.status = 'success'
             state.user = {}
         },
 
         // LOGOUT USER MUTATIONS
-        logout(state) {
+        LOGOUT(state) {
             state.status = 'success'
             state.token = null
             state.userId = null
         },
-        logout_error(state) {
+        LOGOUT_ERROR(state) {
             state.status = 'error'
         },
 
         // FORGET PASSWORD MUTATIONS
-        forget_password_request(state) {
+        FORGET_PASSWORD_REQUEST(state) {
             state.status = 'loading'
         },
-        forget_password_success(state, resetToken) {
+        FORGET_PASSWORD_SUCCESS(state, resetToken) {
             state.status = 'success'
             state.resetToken = resetToken
         },
-        verify_error(state) {
+        VERIFY_ERROR(state) {
             state.status = 'error'
         },
 
         // RESET PASSWORD MUTATIONS
-        reset_password_request(state) {
+        RESET_PASSWORD_REQUEST(state) {
             state.status = 'loading'
         },
-        reset_password_success(state) {
+        RESET_PASSWORD_SUCCESS(state) {
             state.status = 'success'
             state.resetToken = null
             state.userId = null
         },
-        reset_password_error(state) {
+        RESET_PASSWORD_ERROR(state) {
             state.status = 'error'
         },
 
         // Сбрасываем state
-        reset_state(state) {
+        RESET_STATE(state) {
             Object.assign(state, defaultState())
         }
     },
     actions: {
         async login({ commit }, user) {
             return new Promise(((resolve, reject) => {
-                commit('auth_request')
-                axios.post(`${API_ENDPOINTS.BASE_API.LOGIN}`, user)
+                commit('AUTH_REQUEST')
+                instance.post(`${API_ENDPOINTS.BASE_API.LOGIN}`, user)
                     .then(res => {
                         const token = res.data.token
                         const userId = res.data.user._id
                         localStorage.setItem('token', token)
                         localStorage.setItem('id', userId)
-                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
                         axios.defaults.headers.common['Authorization'] = token
-                        commit('auth_success', token)
+                        commit('AUTH_SUCCESS', token)
                         resolve(res)
                     }).catch(err => {
-                        commit('auth_error')
+                        commit('AUTH_ERROR')
                         localStorage.removeItem('token')
                         reject(err)
                     })
@@ -115,21 +122,20 @@ export default new Vuex.Store({
           return new Promise(() => {
               localStorage.removeItem('token')
               localStorage.removeItem('id')
-              commit('logout')
+              commit('LOGOUT')
           })
         },
 
         async register({ commit }, user) {
             return new Promise((resolve, reject) => {
-                commit('auth_request')
-                axios.post(`${API_ENDPOINTS.BASE_API.REGISTER}`, user)
+                commit('AUTH_REQUEST')
+                instance.post(`${API_ENDPOINTS.BASE_API.REGISTER}`, user)
                     .then(res => {
                         const token = res.data.token
                         const user = res.data.user
                         localStorage.setItem('token', token)
-                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
                         axios.defaults.headers.common['Authorization'] = token
-                        commit('auth_success', token, user)
+                        commit('AUTH_SUCCESS', token, user)
                         resolve(res)
                     })
                     .catch(err => {
@@ -142,17 +148,16 @@ export default new Vuex.Store({
 
         async forget_password({ commit }, email) {
             return new Promise(((resolve, reject) => {
-                commit('forget_password_request')
-                axios.post(`${API_ENDPOINTS.BASE_API.FORGET_PASSWORD}`, email)
+                commit('FORGET_PASSWORD_REQUEST')
+                instance.post(`${API_ENDPOINTS.BASE_API.FORGET_PASSWORD}`, email)
                     .then(res => {
                         const resetToken = res.data.token
-                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
                         axios.defaults.headers.common['Authorization'] = resetToken
-                        commit('forget_password_success', resetToken)
+                        commit('FORGET_PASSWORD_SUCCESS', resetToken)
                         resolve(res)
                     })
                     .catch(err => {
-                        commit('verify_error')
+                        commit('VERIFY_ERROR')
                         reject(err)
                     })
             }))
@@ -160,16 +165,15 @@ export default new Vuex.Store({
 
         async reset_password({ commit }, data) {
             return new Promise(((resolve, reject) => {
-                commit('reset_password_request')
-                axios.post(`${API_ENDPOINTS.BASE_API.RESET_PASSWORD}`, data)
+                commit('RESET_PASSWORD_REQUEST')
+                instance.post(`${API_ENDPOINTS.BASE_API.RESET_PASSWORD}`, data)
                     .then(res => {
                         localStorage.removeItem('resetToken')
-                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-                        commit('reset_password_success')
+                        commit('RESET_PASSWORD_SUCCESS')
                         resolve(res)
                     })
                     .catch(err => {
-                        commit('reset_password_error')
+                        commit('RESET_PASSWORD_ERROR')
                         reject(err)
                     })
             }))
@@ -178,9 +182,8 @@ export default new Vuex.Store({
         async check_email({ commit }, email) {
             return new Promise(((resolve, reject) => {
                 commit('check_email')
-                axios.post(`${API_ENDPOINTS.BASE_API.CHECK_EMAIL}`, email)
+                instance.post(`${API_ENDPOINTS.BASE_API.CHECK_EMAIL}`, email)
                     .then(res => {
-                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
                         reject(res)
                     })
                     .catch(info => {
@@ -191,23 +194,22 @@ export default new Vuex.Store({
 
         async get_user({ commit }, id) {
             return new Promise(((resolve, reject) => {
-                commit('get_user')
-                axios.post(`${API_ENDPOINTS.BASE_API.GET_USER_DATA}`, id)
+                commit('GET_USER_REQUEST')
+                instance.post(`${API_ENDPOINTS.BASE_API.GET_USER_DATA}`, id)
                     .then(res => {
                         let user = res.data.user
-                        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-                        commit('get_user_success', user)
+                        commit('GET_USER_SUCCESS', user)
                         resolve(res)
                     })
                     .catch(err => {
-                        commit('get_user_error')
+                        commit('GET_USER_ERROR')
                         reject(err)
                     })
             }))
         },
 
         async reset_state({commit}) {
-            commit('reset_state')
+            commit('RESET_STATE')
         }
     },
     getters: {
