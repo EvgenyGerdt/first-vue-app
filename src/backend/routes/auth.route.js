@@ -20,6 +20,6 @@ router.route('/reset_password').post(resetPassword)
 
 router.route('/check_email').post(checkUserExists)
 
-router.route("/get_user").post(getUserData)
+router.route('/get_user').post(getUserData)
 
 module.exports = router

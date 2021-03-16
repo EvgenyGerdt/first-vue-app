@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', require('./src/backend/routes/auth.route'))
+app.use('/api/user', require('./src/backend/routes/user.route'))
 app.use('/api/private', require('./src/backend/routes/private.route'))
 
 app.use(errorHandler)

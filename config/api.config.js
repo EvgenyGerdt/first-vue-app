@@ -5,7 +5,8 @@ const API_ENDPOINS = {
         FORGET_PASSWORD: 'http://localhost:3030/api/auth/forget_password',
         RESET_PASSWORD: 'http://localhost:3030/api/auth/reset_password',
         CHECK_EMAIL: 'http://localhost:3030/api/auth/check_email',
-        GET_USER_DATA: 'http://localhost:3030/api/auth/get_user'
+        GET_USER_DATA: 'http://localhost:3030/api/auth/get_user',
+        SET_USERNAME: 'http://localhost:3030/api/auth/set_username'
     }
 }
 
