@@ -5,7 +5,7 @@
           class="profilepage__logout-btn"
           @click="logout"
       >
-        <i class="fas fa-chevron-left"></i> Logout
+        <i class="fas fa-chevron-left"></i> LOGOUT
       </button>
       <div class="profilepage__userdata-container">
         <h1 class="profilepage__userdata-title">Your profile</h1>
@@ -13,6 +13,9 @@
           <h3 class="profilepage__userdata-email">
             {{ this.email }}
           </h3>
+          <h4>
+            {{ this.username }}
+          </h4>
         </div>
       </div>
       <div class="profilepage__functional-blocks">
@@ -25,68 +28,35 @@
           <i class="fas fa-user-friends fa-5x"></i>
         </div>
       </div>
-
-      <!-- Edit user modal-window -->
-      <div id="modal" class="profilepage__edit-user-modal">
-        <div id="modal-content" class="profilepage__edit-user-modal-content">
-          <button class="profilepage__edit-user-modal-btn-close" @click="closeEditUserModal">
-            <i class="fas fa-times"></i>
-          </button>
-          <div class="profilepage__edit-user-modal-container">
-            <h1>Edit user</h1>
-            <hr>
-            <form class="profilepage__edit-user-modal__username">
-              <div class="modal__username-input-container">
-                <label>
-                  Username
-                  <input
-                      type="text"
-                      class="modal__input-username"
-                      placeholder="USERNAME"
-                  >
-                </label>
-                <button>SAVE USERNAME</button>
-              </div>
-            </form>
-            <form class="profilepage__edit-user-modal__password">
-              <div class="modal__password-input-container">
-                <label>
-                  Password
-                  <input
-                      type="password"
-                      class="modal__input-password"
-                      placeholder="PASSWORD"
-                  >
-                </label>
-              </div>
-              <div class="modal__repeat-password-input-container">
-                <label>
-                  Repeat password
-                  <input
-                      type="password"
-                      class="modal-input-repeat-password"
-                      placeholder="REPEAT PASSWORD"
-                  >
-                </label>
-                <button>SAVE PASSWORD</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
     </div>
+    <g-edit-user-modal v-if="isVisibleModal" @toggle-modal="showEditUserModal"/>
   </div>
 </template>
 
 <script>
+import gEditUserModal from '../../components/modal/edit-user-modal'
+
+import { minLength, maxLength, required } from 'vuelidate/src/validators'
+
 export default {
   name: "ProfilePage",
+
+  components: {
+    gEditUserModal
+  },
 
   data() {
     return {
       email: '',
-      username: ''
+      username: '',
+      password: '',
+      confirmPassword: '',
+      isVisibleModal: false
     }
+  },
+
+  validators: {
+    username: { required, minLength: minLength(3), maxLength: maxLength(50) }
   },
 
   methods: {
@@ -96,20 +66,8 @@ export default {
     },
 
     showEditUserModal: function () {
-      let modal = document.getElementById('modal')
-
-      modal.style.display = 'block'
-
-      window.onclick = function (event) {
-        if(event.target === modal) {
-          modal.style.display = 'none'
-        }
-      }
+      this.isVisibleModal = !this.isVisibleModal
     },
-
-    closeEditUserModal: function () {
-      document.getElementById('modal').style.display = 'none'
-    }
   },
 
   mounted() {
@@ -117,6 +75,7 @@ export default {
     this.$store.dispatch('get_user', { userId })
         .then(() => {
           this.email = this.$store.state.user.email
+          this.username = this.$store.state.user.username
         })
         .catch(err => {
           console.log(err)
@@ -151,10 +110,11 @@ body {
 }
 
 button {
+  display: flex;
   margin: 10px 0;
   background-color: dodgerblue;
   color: white;
-  padding: 14px 20px;
+  padding: 12px 20px;
   border: transparent;
   border-radius: 0.5em;
   cursor: pointer;
@@ -162,6 +122,7 @@ button {
   transition: 150ms ease;
   font-size: 16px;
   font-weight: bold;
+  justify-content: center;
   outline: none;
 }
 
@@ -172,10 +133,10 @@ button:hover {
 
 input[type=text],
 input[type=password] {
+  display: flex;
   width: 100%;
   padding: 12px 20px;
   margin: 10px 0;
-  display: flex;
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 0.5em;
@@ -208,35 +169,8 @@ input[type=password] {
   transform: translateY(-10px);
 }
 
-.profilepage__edit-user-modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.profilepage__edit-user-modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 25px 50px;
-  border-radius: 1em;
-  width: 50%;
-}
-
-.profilepage__edit-user-modal-btn-close {
-  float: right;
-  margin: -30px -40px 10px 0;
-  padding-right: 10px;
-  width: 20px;
-  height: 20px;
-  color: grey;
-  background-color: transparent;
+i {
+  margin-right: 10px;
 }
 
 </style>

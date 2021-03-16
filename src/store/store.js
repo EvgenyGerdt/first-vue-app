@@ -16,7 +16,7 @@ const defaultState = () => {
 }
 
 const instance = axios.create({
-    timeout: 1000,
+    timeout: 5000,
     headers: {'Access-Control-Allow-Origin': '*'}
 })
 
@@ -55,6 +55,17 @@ export default new Vuex.Store({
         GET_USER_ERROR(state) {
             state.status = 'success'
             state.user = {}
+        },
+
+        // SAVE USERNAME MUTATIONS
+        SET_USERNAME_REQUEST(state) {
+            state.status = 'loading'
+        },
+        SET_USERNAME_SUCCESS(state) {
+            state.status = 'success'
+        },
+        SET_USERNAME_ERROR(state) {
+            state.status = 'error'
         },
 
         // LOGOUT USER MUTATIONS
@@ -188,6 +199,21 @@ export default new Vuex.Store({
                     })
                     .catch(info => {
                         resolve(info)
+                    })
+            }))
+        },
+
+        async set_username({ commit }, data) {
+            return new Promise(((resolve, reject) => {
+                commit('SET_USERNAME_REQUEST')
+                instance.post(`${API_ENDPOINTS.BASE_API.SET_USERNAME}`, data)
+                    .then(res => {
+                        commit('SET_USERNAME_SUCCESS')
+                        resolve(res)
+                    })
+                    .catch(err => {
+                        commit('SET_USERNAME_ERROR')
+                        reject(err)
                     })
             }))
         },

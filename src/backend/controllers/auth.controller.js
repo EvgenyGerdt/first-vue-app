@@ -110,7 +110,7 @@ exports.resetPassword = async (req, res, next) => {
     }
 }
 
-// GET Получаем данные пользователя после авторизации / регистрации
+// POST Получаем данные пользователя после авторизации / регистрации
 exports.getUserData = async (req, res, next) => {
     const { userId } = req.body
 
@@ -132,7 +132,7 @@ exports.getUserData = async (req, res, next) => {
     }
 }
 
-// GET Проверяем наличие пользователя
+// POST Проверяем наличие пользователя
 exports.checkUserExists = async (req, res, next) => {
     const { email } = req.body
 
@@ -141,8 +141,7 @@ exports.checkUserExists = async (req, res, next) => {
             if(err) {
                 return next(new ErrorResponse(err, 500))
             } else if (user) {
-                log.error('User already exists')
-                res.status(409).json({ message: 'User already exists' })
+                return next(new ErrorResponse('User already exists', 409))
             } else {
                 log.info(`Email available for registration`)
                 res.status(200).json({ message: 'Email address available for registration' })
