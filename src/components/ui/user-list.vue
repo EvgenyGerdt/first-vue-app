@@ -16,7 +16,7 @@
       </div>
     </div>
   </div>
-</template>c
+</template>
 
 <script>
 export default {
