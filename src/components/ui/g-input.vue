@@ -26,13 +26,16 @@ export default {
 <style scoped>
 input[type=text],
 input[type=password] {
-  display: flex;
   width: 100%;
   padding: 12px 20px;
   margin: 10px 0;
+  display: inline-block;
+  font-size: 16px;
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 0.5em;
   text-align: center;
+  outline: none;
+  transition: 0.4s;
 }
 </style>

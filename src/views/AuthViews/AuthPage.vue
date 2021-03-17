@@ -13,16 +13,14 @@
             class="authpage__input-container"
             :class="{'error': $v.email.$error}"
         >
-          <label>
-            <input
-                required
-                v-model.trim="email"
-                type="text"
-                class="authpage__input-email"
-                placeholder="EMAIL"
-                @change="setEmail($event.target.value)"
-            >
-          </label>
+          <input
+              required
+              v-model.trim="email"
+              type="text"
+              class="authpage__input-email"
+              placeholder="EMAIL"
+              @change="setEmail($event.target.value)"
+          >
         </div>
         <div class="error" v-if="!$v.email.required && $v.email.$dirty">Please, enter your email</div>
         <div class="error" v-if="!$v.email.email && $v.email.$dirty">Please, enter correct email</div>
@@ -30,20 +28,19 @@
             class="authpage__input-container"
             :class="{'error': $v.password.$error}"
         >
-          <label>
-            <input
-                required
-                model.trim="password"
-                type="password"
-                class="authpage__input-password"
-                id="password"
-                placeholder="PASSWORD"
-                @change="setPassword($event.target.value)"
-            >
-            <span class="focus-border">
+          <input
+              required
+              model.trim="password"
+              type="password"
+              class="authpage__input-password"
+              id="password"
+              placeholder="PASSWORD"
+              @change="setPassword($event.target.value)"
+          >
+          <span class="focus-border">
               <i></i>
             </span>
-            <span @click="showAndHidePassword" class="toggle-password">
+          <span @click="showAndHidePassword" class="toggle-password">
               <span v-if="!marked">
                 <i class="fas fa-eye" />
               </span>
@@ -51,7 +48,6 @@
                 <i class="fas fa-eye-slash" />
               </span>
             </span>
-          </label>
         </div>
         <div class="error" v-if="!$v.password.required && $v.password.$dirty">Please, enter your password</div>
         <div class="error" v-if="!authStatus && authStatus!==null">Invalid password or email</div>
