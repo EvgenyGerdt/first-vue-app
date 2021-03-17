@@ -1,4 +1,4 @@
-const API_ENDPOINS = {
+const API_ENDPOINTS = {
     BASE_API: {
         LOGIN: 'http://localhost:3030/api/auth/login',
         REGISTER: 'http://localhost:3030/api/auth/register',
@@ -6,8 +6,9 @@ const API_ENDPOINS = {
         RESET_PASSWORD: 'http://localhost:3030/api/auth/reset_password',
         CHECK_EMAIL: 'http://localhost:3030/api/auth/check_email',
         GET_USER_DATA: 'http://localhost:3030/api/auth/get_user',
-        SET_USERNAME: 'http://localhost:3030/api/auth/set_username'
+        SET_USERNAME: 'http://localhost:3030/api/user/set_username',
+        GET_ALL_USERS: 'http://localhost:3030/api/user/get_all_users'
     }
 }
 
-module.exports = API_ENDPOINS
+module.exports = API_ENDPOINTS

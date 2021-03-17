@@ -1,10 +1,16 @@
 <template>
-
+  <button>
+    {{ text }}
+  </button>
 </template>
 
 <script>
 export default {
-  name: "g-button"
+  name: "g-button",
+
+  props: {
+    text: String,
+  }
 }
 </script>
 

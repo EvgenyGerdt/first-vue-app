@@ -53,8 +53,20 @@ export default new Vuex.Store({
             state.user = user
         },
         GET_USER_ERROR(state) {
-            state.status = 'success'
+            state.status = 'error'
             state.user = {}
+        },
+
+        //GET ALL USERS MUTATIONS
+        GET_ALL_USERS_REQUEST(state) {
+            state.status = 'loading'
+        },
+        GET_ALL_USERS_SUCCESS(state, users) {
+            state.status = 'success'
+            state.users = users
+        },
+        GET_ALL_USERS_ERROR(state) {
+            state.status = 'error'
         },
 
         // SAVE USERNAME MUTATIONS
@@ -232,6 +244,22 @@ export default new Vuex.Store({
                         reject(err)
                     })
             }))
+        },
+
+        async get_all_users({ commit }) {
+            return new Promise((resolve, reject) => {
+                commit('GET_ALL_USERS_REQUEST')
+                instance.get(`${API_ENDPOINTS.BASE_API.GET_ALL_USERS}`)
+                    .then(res => {
+                        let users = res.data.users
+                        commit('GET_ALL_USERS_SUCCESS', users)
+                        resolve(res)
+                    })
+                    .catch(err => {
+                        commit('GET_ALL_USERS_ERROR')
+                        reject(err)
+                    })
+            })
         },
 
         async reset_state({commit}) {

@@ -19,22 +19,24 @@
         </div>
       </div>
       <div class="profilepage__functional-blocks">
-        <div class="profilepage__edit-user block" @click="showEditUserModal">
+        <div class="profilepage__edit-user block" @click="toggleEditModal">
           <h3>Edit your profile</h3>
           <i class="fas fa-user-edit fa-5x"></i>
         </div>
-        <div class="profilepage__add-to-friend block">
-          <h3>Find friends</h3>
+        <div class="profilepage__add-to-friend block" @click="toggleFriendsModal">
+          <h3>Friends</h3>
           <i class="fas fa-user-friends fa-5x"></i>
         </div>
       </div>
     </div>
-    <g-edit-user-modal v-if="isVisibleModal" @toggle-modal="showEditUserModal"/>
+    <g-edit-user-modal v-if="isVisibleEditModal" @toggle-modal="toggleEditModal"/>
+    <friends-modal v-if="isVisibleFriendsModal" @toggle-modal="toggleFriendsModal"/>
   </div>
 </template>
 
 <script>
-import gEditUserModal from '../../components/modal/edit-user-modal'
+import gEditUserModal from '@/components/modal/edit-user-modal'
+import FriendsModal from "@/components/modal/friends-modal"
 
 import { minLength, maxLength, required } from 'vuelidate/src/validators'
 
@@ -42,7 +44,8 @@ export default {
   name: "ProfilePage",
 
   components: {
-    gEditUserModal
+    FriendsModal,
+    gEditUserModal,
   },
 
   data() {
@@ -51,7 +54,8 @@ export default {
       username: '',
       password: '',
       confirmPassword: '',
-      isVisibleModal: false
+      isVisibleEditModal: false,
+      isVisibleFriendsModal: false
     }
   },
 
@@ -65,9 +69,13 @@ export default {
       this.$router.push({name: 'homePage'})
     },
 
-    showEditUserModal: function () {
-      this.isVisibleModal = !this.isVisibleModal
+    toggleEditModal: function () {
+      this.isVisibleEditModal = !this.isVisibleEditModal
     },
+
+    toggleFriendsModal: function () {
+      this.isVisibleFriendsModal = !this.isVisibleFriendsModal
+    }
   },
 
   mounted() {

@@ -17,7 +17,7 @@
                    placeholder="USERNAME"
                    type="text"
                />
-               <button type="submit">SAVE USERNAME</button>
+               <g-button type="submit" text="SAVE USERNAME"/>
              </div>
            </form>
            <form class="profilepage__edit-user-modal__password">
@@ -37,7 +37,7 @@
                      placeholder="CONFIRM PASSWORD"
                      type="password"
                  />
-                 <button>SAVE PASSWORD</button>
+                 <g-button text="SAVE PASSWORD"/>
                </label>
              </div>
            </form>
@@ -50,10 +50,11 @@
 
 <script>
 import GInput from "@/components/ui/g-input";
+import GButton from '@/components/ui/g-button'
 
 export default {
   name: "edit-user-modal",
-  components: {GInput},
+  components: {GInput, GButton},
   data() {
     return {
       username: '',
@@ -78,7 +79,7 @@ export default {
 </script>
 
 <style scoped>
-button {
+.profilepage__edit-user-modal-btn-close {
   display: flex;
   margin: 10px 0;
   background-color: dodgerblue;
@@ -93,11 +94,6 @@ button {
   font-weight: bold;
   justify-content: center;
   outline: none;
-}
-
-button:hover {
-  transition: 150ms ease;
-  opacity: 0.9;
 }
 
 .profilepage__edit-user-modal {
@@ -115,6 +111,7 @@ button:hover {
 .profilepage__edit-user-modal-content {
   position: relative;
   background-color: #fefefe;
+  box-shadow: 1px 1px 24px grey;
   margin: 7% auto;
   padding: 25px 50px;
   border-radius: 1em;
@@ -149,5 +146,4 @@ button:hover {
     transform: scale(1);
   }
 }
-
 </style>
