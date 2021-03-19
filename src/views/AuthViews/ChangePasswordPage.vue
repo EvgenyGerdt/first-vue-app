@@ -37,7 +37,7 @@
         <button
             v-if="!isChanged"
             class="change-password-page__button-back"
-            @click="resetState"
+            @click="clearResetToken"
         >
           BACK
         </button>
@@ -63,21 +63,21 @@ export default {
   methods: {
     checkEmail: async function (){
       let email = this.email
-      this.$store.dispatch('forget_password', { email })
+      this.$store.dispatch('FORGET_PASSWORD_REQUEST', { email })
           .then(() => this.isVerified = true)
           .catch((err) => console.log(err))
     },
 
     resetPassword: async function () {
       let password = this.newPassword
-      let resetToken = this.$store.state.resetToken
-      this.$store.dispatch('reset_password', { resetToken, password })
+      let resetToken = localStorage.getItem('resetToken')
+      this.$store.dispatch('RESET_PASSWORD_REQUEST', {resetToken, password })
           .then(() => this.isChanged = true)
           .catch((err) => console.log(err))
     },
 
-    resetState: function() {
-      this.$store.dispatch('reset_state')
+    clearResetToken: function() {
+      this.$store.dispatch('CLEAR_RESET_TOKEN')
           .then(() => this.$router.push({ name: 'authPage' }))
           .catch((err) => console.log(err))
     }

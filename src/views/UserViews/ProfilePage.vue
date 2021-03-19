@@ -11,7 +11,6 @@
         <h1 class="profilepage__userdata-title">Your profile</h1>
         <div class="profilepage__userdata-info">
           <h3 class="profilepage__userdata-email">
-            {{ this.email }}
           </h3>
           <h4>
             {{ this.username }}
@@ -23,20 +22,18 @@
           <h3>Edit your profile</h3>
           <i class="fas fa-user-edit fa-5x"></i>
         </div>
-        <div class="profilepage__add-to-friend block" @click="toggleFriendsModal">
+        <div class="profilepage__add-to-friend block" @click="$router.push({ name: 'chatPage' })">
           <h3>Friends</h3>
           <i class="fas fa-user-friends fa-5x"></i>
         </div>
       </div>
     </div>
     <g-edit-user-modal v-if="isVisibleEditModal" @toggle-modal="toggleEditModal"/>
-    <friends-modal v-if="isVisibleFriendsModal" @toggle-modal="toggleFriendsModal"/>
   </div>
 </template>
 
 <script>
 import gEditUserModal from '@/components/modal/edit-user-modal'
-import FriendsModal from "@/components/modal/friends-modal"
 
 import { minLength, maxLength, required } from 'vuelidate/src/validators'
 
@@ -44,18 +41,15 @@ export default {
   name: "ProfilePage",
 
   components: {
-    FriendsModal,
-    gEditUserModal,
+    gEditUserModal
   },
 
   data() {
     return {
-      email: '',
       username: '',
       password: '',
       confirmPassword: '',
       isVisibleEditModal: false,
-      isVisibleFriendsModal: false
     }
   },
 
@@ -65,29 +59,22 @@ export default {
 
   methods: {
     logout: function () {
-      this.$store.dispatch('logout')
+      this.$store.dispatch('AUTH_LOGOUT')
       this.$router.push({name: 'homePage'})
     },
 
     toggleEditModal: function () {
       this.isVisibleEditModal = !this.isVisibleEditModal
-    },
-
-    toggleFriendsModal: function () {
-      this.isVisibleFriendsModal = !this.isVisibleFriendsModal
     }
   },
-
   mounted() {
     let userId = localStorage.getItem('id')
-    this.$store.dispatch('get_user', { userId })
+    this.$store.dispatch('USER_REQUEST', userId)
         .then(() => {
-          this.email = this.$store.state.user.email
-          this.username = this.$store.state.user.username
+          this.username = this.$store.getters.getUser.username === null ?
+              '' : this.$store.getters.getUser.username
         })
-        .catch(err => {
-          console.log(err)
-        })
+        .catch()
   }
 }
 </script>
