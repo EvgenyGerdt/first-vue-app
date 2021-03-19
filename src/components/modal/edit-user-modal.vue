@@ -1,51 +1,51 @@
 <template>
- <transition name="fade">
-   <div id="modal" class="profilepage__edit-user-modal" >
-     <transition name="bounce" appear>
-       <div id="modal-content" class="profilepage__edit-user-modal-content">
-         <button class="profilepage__edit-user-modal-btn-close" @click="closeEditUserModal">
-           <i class="fas fa-times"></i>
-         </button>
-         <div class="profilepage__edit-user-modal-container">
-           <form class="profilepage__edit-user-modal__username" @submit.prevent="setUsername">
-             <div class="modal__username-input-container">
-               USERNAME
-               <hr>
-               <g-input
-                   required
-                   v-model="username"
-                   placeholder="USERNAME"
-                   type="text"
-               />
-               <g-button type="submit" text="SAVE USERNAME"/>
-             </div>
-           </form>
-           <form class="profilepage__edit-user-modal__password">
-             <div class="modal__password-input-container">
-               <label>
-                 PASSWORD
-                 <hr>
-                 <g-input
-                     required
-                     v-model="password"
-                     placeholder="PASSWORD"
-                     type="password"
-                 />
-                 <g-input
-                     required
-                     v-model="confirmPassword"
-                     placeholder="CONFIRM PASSWORD"
-                     type="password"
-                 />
-                 <g-button text="SAVE PASSWORD"/>
-               </label>
-             </div>
-           </form>
-         </div>
-       </div>
-     </transition>
-   </div>
- </transition>
+  <transition name="fade">
+    <div id="modal" class="profilepage__edit-user-modal" >
+      <transition name="bounce" appear>
+        <div id="modal-content" class="profilepage__edit-user-modal-content">
+          <button class="profilepage__edit-user-modal-btn-close" @click="closeEditUserModal">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="profilepage__edit-user-modal-container">
+            <form class="profilepage__edit-user-modal__username" @submit.prevent="setUsername">
+              <div class="modal__username-input-container">
+                USERNAME
+                <hr>
+                <g-input
+                    required
+                    v-model="username"
+                    placeholder="USERNAME"
+                    type="text"
+                />
+                <g-button type="submit" text="SAVE USERNAME"/>
+              </div>
+            </form>
+            <form class="profilepage__edit-user-modal__password">
+              <div class="modal__password-input-container">
+                <label>
+                  PASSWORD
+                  <hr>
+                  <g-input
+                      required
+                      v-model="password"
+                      placeholder="PASSWORD"
+                      type="password"
+                  />
+                  <g-input
+                      required
+                      v-model="confirmPassword"
+                      placeholder="CONFIRM PASSWORD"
+                      type="password"
+                  />
+                  <g-button text="SAVE PASSWORD"/>
+                </label>
+              </div>
+            </form>
+          </div>
+        </div>
+      </transition>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -71,7 +71,7 @@ export default {
     setUsername: async function () {
       let userId = localStorage.getItem('id')
       let username = this.username
-      await this.$store.dispatch('set_username', { username, userId})
+      await this.$store.dispatch('CHANGE_DATA_REQUEST', { username, userId})
           .catch((err) => console.log(err))
     },
   }

@@ -20,7 +20,7 @@
         </div>
         <div class="error" v-if="!$v.email.required && $v.email.$dirty">Please, enter your email</div>
         <div class="error" v-if="!$v.email.email && $v.email.$dirty">Please, enter correct email</div>
-        <div class="error" v-if="!isEmailExists && isEmailExists!==null">This email address already exists</div>
+        <div class="error" v-if="isEmailExists && $v.email.$dirty">This email address already exists</div>
         <div
             class="registrationpage__container-input"
             :class="{'error': $v.password.$error}"
@@ -73,6 +73,7 @@
 
 <script>
 import { required, maxLength, minLength, email, sameAs } from 'vuelidate/lib/validators'
+import store from '../../store/index'
 
 export default {
   name: "RegistrationPage",
@@ -81,8 +82,8 @@ export default {
     email: '',
     password: '',
     confirmPassword: '',
-    authStatus: null,
-    isEmailExists: null
+    authStatus: store.getters.isAuthenticated,
+    isEmailExists: false
   }),
 
   validations: {
@@ -97,22 +98,14 @@ export default {
       this.$v.email.$touch()
       if(value !== '') {
         this.checkEmail(value)
-      } else {
-        this.isEmailExists = true
       }
     },
 
     async checkEmail(value) {
       let email = value
       this.error = false
-      await this.$store.dispatch('check_email', {email})
-          .then(() => {
-            this.isEmailExists = false
-          })
-          .catch((err) => {
-            this.isEmailExists = true
-            console.log(err)
-          })
+      await this.$store.dispatch('CHECK_EMAIL_REQUEST', {email})
+          .catch((err) => console.log(err))
     },
 
     setPassword(value) {
@@ -129,7 +122,7 @@ export default {
       let email = this.email
       let password = this.password
       this.error = false
-      await this.$store.dispatch('register', {email, password})
+      await this.$store.dispatch('REGISTER_REQUEST', {email, password})
           .then(() => {
             this.authStatus = true
             this.$router.push('/profile')
@@ -140,6 +133,12 @@ export default {
           })
     },
   },
+
+  watch: {
+    email: function () {
+      this.isEmailExists = store.getters.isEmailExists
+    }
+  }
 }
 </script>
 

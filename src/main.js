@@ -5,7 +5,7 @@ import Vuelidate from "vuelidate"
 import axios from "axios"
 
 import router from './router/router'
-import store from './store/store'
+import store from './store/index'
 
 Vue.config.productionTip = false
 

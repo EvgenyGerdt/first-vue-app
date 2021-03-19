@@ -95,7 +95,7 @@ exports.resetPassword = async (req, res, next) => {
             if(err) {
                 return next(new ErrorResponse(err, 500))
             } else {
-                await user.update({ password: await user.getHashedPassword(password) })
+                await user.updateOne({ password: await user.getHashedPassword(password) })
 
                 log.info(`Password successfully change by user ${user.email}`)
                 res.status(200).json({ success: true, message: 'Password successfully changed' })
@@ -120,7 +120,7 @@ exports.getUserData = async (req, res, next) => {
                 return next(new ErrorResponse(err, 500))
             } else {
                 log.info(`✅ User data has been sent: \n ${user}`)
-                res.status(200).json({ user: user })
+                res.status(200).json({ session: user })
             }
         })
 

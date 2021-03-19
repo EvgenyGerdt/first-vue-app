@@ -109,7 +109,7 @@ export default {
       }
       let email = this.email
       let password = this.password
-      await this.$store.dispatch('login', { email, password })
+      await this.$store.dispatch('AUTH_REQUEST', { email, password })
           .then(() => {
             this.authStatus = true
             this.$router.push('/profile')

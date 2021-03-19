@@ -1,18 +1,19 @@
 <template>
   <div class="userslist">
-    <div class="userslist__header">
-      <h1>Users</h1>
-    </div>
-    <hr>
-    <input class="search-input" placeholder="Write username or email..." v-model="search">
     <div class="userslist__container">
-      <div class="user" v-for="user in filteredUsers" v-bind:key="user.email">
-        <div class="username">
-          {{ user.email }}
+      <div class="userslist__header">
+        <h3>Users</h3>
+      </div>
+      <input class="search-input" placeholder="Write username or email..." v-model="search">
+      <div class="user__container">
+        <div class="user" v-for="user in filteredUsers" v-bind:key="user.email">
+          <div class="username">
+            {{ user.email }}
+          </div>
+          <button class="userlist__add-to-friend-btn">
+            <i class="fas fa-user-plus"></i>
+          </button>
         </div>
-        <button class="userlist__add-to-friend-btn">
-          <i class="fas fa-user-plus"></i>
-        </button>
       </div>
     </div>
   </div>
@@ -29,8 +30,8 @@ export default {
   },
 
   mounted() {
-    this.$store.dispatch('get_all_users')
-        .then(() => this.users = this.$store.state.users)
+    this.$store.dispatch('ALL_USERS_REQUEST')
+        .then(() => this.users = this.$store.state.user.users)
         .catch((err) => console.log(err))
   },
 
@@ -45,72 +46,67 @@ export default {
 </script>
 
 <style scoped>
+.userslist {
+  width: 30%;
+}
+
 .userslist__container {
-  position: relative;
-  display: block;
-  max-height: 400px;
-  background-color: #fefefe;
-  margin: 4% auto;
-  padding: 0 25px;
-  border-radius: 1em;
-  width: 100%;
-  overflow-y: scroll;
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  border-right: 1px solid darkgrey;
 }
 
 .user {
-  display: block;
-  background-color: white;
-  margin: 0;
-  text-align: center;
-  width: 100%;
-  height: 35px;
-  border-top: 1px solid darkgrey;
+  padding: 0 0 0 20px;
+  height: 50px;
   border-bottom: 1px solid darkgrey;
-  list-style-type: none;
-  transition: 150ms ease;
-  cursor: pointer;
-  text-decoration: none;
 }
 
 .user:hover {
-  transition: 150ms ease;
-  box-shadow: 1px 1px 7px grey;
+  background-color: #e8e8e8;
+}
+
+.user__container {
+  height: 90vh;
+  flex-grow: 1;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .username {
   float: left;
-  padding: 0 10px;
-}
-
-.search-input {
-  height: 30px;
-  width: 100%;
-  margin-bottom: 15px;
-  border: 1px solid darkgrey;
 }
 
 .userlist__add-to-friend-btn {
-  margin: 7px 10px;
+  float: right;
+  width: 15%;
+  height: 100%;
   border: transparent;
-  border-radius: 1em;
   background-color: dodgerblue;
   color: white;
-  padding: 1px -2px;
-  float: right;
+  transition: 150ms ease;
 }
 
 .userlist__add-to-friend-btn:hover {
+  transition: 150ms ease;
   opacity: 0.9;
 }
 
-hr, h1 {
+.search-input {
+  height: 40px;
+  width: 100%;
+  border-top: transparent;
+  border-bottom: 1px solid darkgrey;
+  border-right: 1px solid darkgrey;
+  padding: 20px 15px;
+}
+
+.userslist__header {
+  padding: 10px;
+  background-color: dodgerblue;
+  color: white;
   margin: 0;
 }
 
-hr {
-  margin-bottom: 10px!important;
+h3 {
+  margin-top: 0;
 }
-
 </style>
