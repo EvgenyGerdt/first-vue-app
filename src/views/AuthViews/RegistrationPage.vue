@@ -1,6 +1,15 @@
 <template>
   <div class="registerpage">
-    <form @submit.prevent="register" class="registerpage__container">
+    <button type="button" class="registerpage__button-back" @click="$router.push({ name: 'homePage' })">
+      <i class="fas fa-chevron-left registerpage__icon"></i> BACK
+    </button>
+    <form @submit.prevent="register">
+      <div class="registerpage__welcome-container">
+        <div class="registerpage__welcome-info">
+          <h1>Enjoy in my chat!</h1>
+          <i class="fas fa-broadcast-tower fa-7x"></i>
+        </div>
+      </div>
       <div class="registerpage__container">
         <h1 class="registerpage__title">Sign In</h1>
         <div
@@ -56,15 +65,6 @@
         </div>
         <div class="error" v-if="!$v.confirmPassword.sameAsPassword">Password confirmation does not match</div>
         <button type="submit" class="registerpage__button-login">SIGN UP</button>
-      </div>
-      <div class="registerpage__container-bottom">
-        <button
-            type="button"
-            class="registerpage__button-back"
-            @click="$router.push({ name: 'homePage' })"
-        >
-          BACK
-        </button>
         <span>You already have account? Just <a @click="$router.push({name: 'authPage'})">Sign in!</a></span  >
       </div>
     </form>
@@ -143,11 +143,20 @@ export default {
 </script>
 
 <style scoped>
+body {
+  display: flex!important;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 form {
-  position: absolute;
-  display: block;
-  top: 10%;
-  left: 35%;
+  display: flex;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  min-height: 550px;
+  border-radius: 20px;
+  margin: 70px auto;
 }
 
 input[type=text],
@@ -190,10 +199,21 @@ button:hover {
   background-color: #f44336;
 }
 
-.registerpage__container,
-.registerpage__container-bottom {
+.registerpage__container {
   padding: 16px;
   width: 50%;
+}
+
+.registerpage__welcome-container {
+  display: flex;
+  width: 50%;
+  border-bottom-left-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 20px;
+  background: linear-gradient(3deg, rgba(55,45,235,1) 0%, rgba(53,94,246,1) 16%, rgba(0,212,255,1) 100%);
+  text-align: center;
+  color: white;
 }
 
 a {
@@ -216,6 +236,21 @@ small {
 
 .error {
   color: #c20a1d;
+}
+
+.registerpage__button-back {
+  position: absolute;
+  width: auto;
+  left: 20px;
+  top: 10px;
+  font-size: 40px;
+  background: transparent;
+  color: #d9d9d9
+}
+
+.registerpage__button-back:hover {
+  transform: translateX(-20px);
+  color: dodgerblue;
 }
 
 </style>

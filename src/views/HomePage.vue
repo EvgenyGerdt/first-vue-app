@@ -25,10 +25,10 @@ button {
   margin: 20px;
   font-size: 16px;
   font-weight: bold;
-  background-color: dodgerblue;
+  background: linear-gradient(138deg, rgba(55,45,235,1) 0%, rgba(53,94,246,1) 16%, rgba(0,212,255,1) 100%);
+  border-radius: 17px;
   color: white;
   border: transparent;
-  border-radius: 1em;
   cursor: pointer;
   transition: 300ms ease;
 }

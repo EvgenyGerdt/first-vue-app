@@ -1,10 +1,17 @@
 <template>
-  <div>
+  <div class="authpage">
     <button type="button" class="authpage__button-back" @click="$router.push({ name: 'homePage' })">
       <i class="fas fa-chevron-left authpage__icon"></i> BACK
     </button>
-    <form @submit.prevent="login" class="authpage__container">
-      <div class="authpage__container">
+    <form @submit.prevent="login" class="authpage__container main">
+      <div class="authpage__welcome-container">
+        <div class="authpage__welcome-info">
+          <h1>Glad to see you!</h1>
+          <i class="far fa-comments fa-7x"></i>
+          <p>This is my first chat application</p>
+        </div>
+      </div>
+      <div class="authpage__container content">
         <span class="authpage__icon">
           <i class="fas fa-user fa-7x"></i>
         </span>
@@ -28,15 +35,17 @@
             class="authpage__input-container"
             :class="{'error': $v.password.$error}"
         >
-          <input
-              required
-              model.trim="password"
-              type="password"
-              class="authpage__input-password"
-              id="password"
-              placeholder="PASSWORD"
-              @change="setPassword($event.target.value)"
-          >
+          <label>
+            <input
+                required
+                model.trim="password"
+                type="password"
+                class="authpage__input-password"
+                id="password"
+                placeholder="PASSWORD"
+                @change="setPassword($event.target.value)"
+            >
+          </label>
           <span class="focus-border">
               <i></i>
             </span>
@@ -53,19 +62,19 @@
         <div class="error" v-if="!authStatus && authStatus!==null">Invalid password or email</div>
         <div class="error"></div>
         <button type="submit" class="authpage__button-login">
-          LOGIN <i class="fas fa-sign-in-alt"></i>
+          LOGIN
         </button>
         <label>
           <input type="checkbox" checked="checked" class="authpage__checkbox-remember"> Remember me
         </label>
-      </div>
-      <div class="authpage__container-bottom">
-        <span class="authpage__link-create-account">
-          Don't have account? <a @click="$router.push({ name: 'registrationPage' })">Create here!</a>
-        </span>
-        <span class="authpage__link-forgot-password">
-          Forgot <a @click="$router.push({name: 'changePasswordPage'})">password?</a>
-        </span>
+        <div class="authpage__container-bottom">
+          <span class="authpage__link-create-account">
+            Don't have account? <a @click="$router.push({ name: 'registrationPage' })">Create here!</a>
+          </span>
+            <span class="authpage__link-forgot-password">
+            Forgot <a @click="$router.push({name: 'changePasswordPage'})">password?</a>
+          </span>
+        </div>
       </div>
     </form>
   </div>
@@ -145,13 +154,13 @@ body {
 
 form {
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
+  max-width: 800px;
 }
 
 .authpage__container {
   position: relative;
   margin: 50px auto;
-  padding: 5px 20px;
+  min-height: 550px;
   background: #fff;
   border-radius: 20px;
 }
@@ -162,7 +171,6 @@ input[type=password] {
   padding: 12px 20px;
   margin: 10px 0;
   display: inline-block;
-  font-size: 16px;
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 0.5em;
@@ -178,7 +186,7 @@ input[type=password]:focus {
 
 button {
   margin: 10px 0;
-  background-color: dodgerblue;
+  background: linear-gradient(138deg, rgba(55,45,235,1) 0%, rgba(53,94,246,1) 16%, rgba(0,212,255,1) 100%);
   color: white;
   padding: 14px 20px;
   border: transparent;
@@ -246,5 +254,30 @@ a:hover {
 .authpage__link-forgot-password,
 .authpage__link-create-account {
   margin: 10px;
+}
+
+.main {
+  display: flex;
+}
+
+.authpage__welcome-container {
+  display: flex;
+  width: 50%;
+  border-bottom-left-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 20px;
+  background: linear-gradient(3deg, rgba(55,45,235,1) 0%, rgba(53,94,246,1) 16%, rgba(0,212,255,1) 100%);
+  text-align: center;
+  color: white;
+}
+
+.content {
+  padding: 10px;
+}
+
+.authpage__container-bottom {
+  display: flex;
+  flex-direction: column;
 }
 </style>

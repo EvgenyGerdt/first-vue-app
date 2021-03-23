@@ -1,6 +1,14 @@
 <template>
   <div class="change-password-page">
+    <button
+        v-if="!isChanged"
+        class="change-password-page__button-back"
+        @click="clearResetToken"
+    >
+      <i class="fas fa-chevron-left registerpage__icon"></i>  BACK
+    </button>
     <form class="change-password-page__container">
+      <i class="fas fa-user-lock fa-7x"></i>
       <h1 class="change-password-page__title">Change password</h1>
       <div class="change-password-page__container email" v-if="!isVerified">
         <label>
@@ -32,15 +40,6 @@
           v-if="isChanged"
       >
         <span>Your password successfully changed, <a @click="$router.push({ name: 'authPage' })">Sign in!</a></span>
-      </div>
-      <div class="change-password-page__container-bottom">
-        <button
-            v-if="!isChanged"
-            class="change-password-page__button-back"
-            @click="clearResetToken"
-        >
-          BACK
-        </button>
       </div>
     </form>
   </div>
@@ -92,11 +91,20 @@ html, body {
   overflow: hidden;
 }
 
+body {
+  display: flex!important;
+  justify-content: center;
+  align-items: center;
+
+}
+
 form {
-  position: absolute;
-  display: block;
-  top: 20%;
-  left: 41%;
+  margin: 150px auto;
+  max-height: 500px;
+  max-width: 500px;
+  padding: 30px 30px;
+  box-shadow: 1px 1px 8px darkgrey;
+  border-radius: 20px;
 }
 
 input[type=text],
@@ -146,6 +154,21 @@ button:hover {
 
 .error {
   color: #c20a1d;
+}
+
+.change-password-page__button-back {
+  position: absolute;
+  width: auto;
+  left: 20px;
+  top: 10px;
+  font-size: 40px;
+  background: transparent;
+  color: #d9d9d9
+}
+
+.change-password-page__button-back:hover {
+  transform: translateX(-20px);
+  color: dodgerblue;
 }
 
 </style>

@@ -4,11 +4,17 @@
       <div class="userslist__header">
         <h3>Users</h3>
       </div>
-      <input class="search-input" placeholder="Write username or email..." v-model="search">
+      <label>
+        <input class="search-input" placeholder="Write username or email..." v-model="search">
+      </label>
       <div class="user__container">
-        <div class="user" v-for="user in filteredUsers" v-bind:key="user.email">
-          <div class="username">
-            {{ user.email }}
+        <div
+            class="user"
+            v-for="user in filteredUsers"
+            v-bind:key="name = user.username ? user.username : user.email"
+        >
+          <div class="username" v-if="user">
+            {{ name }}
           </div>
           <button class="userlist__add-to-friend-btn">
             <i class="fas fa-user-plus"></i>
@@ -29,7 +35,7 @@ export default {
     }
   },
 
-  mounted() {
+  created() {
     this.$store.dispatch('ALL_USERS_REQUEST')
         .then(() => this.users = this.$store.state.user.users)
         .catch((err) => console.log(err))
@@ -38,7 +44,9 @@ export default {
   computed: {
     filteredUsers() {
       return this.users.filter(user => {
-        return user.email.toLowerCase().includes(this.search.toLowerCase())
+        return user.username !== undefined ?
+            user.username.toLowerCase().includes(this.search.toLowerCase()) :
+            user.email.toLowerCase().includes(this.search.toLowerCase())
       })
     }
   }
@@ -48,16 +56,15 @@ export default {
 <style scoped>
 .userslist {
   width: 30%;
-}
-
-.userslist__container {
-  border-right: 1px solid darkgrey;
+  height: 100%;
 }
 
 .user {
+  display: flex;
   padding: 0 0 0 20px;
-  height: 50px;
-  border-bottom: 1px solid darkgrey;
+  height: 70px;
+  border-bottom: 1px solid #F5F4F4;
+  border-radius: 20px;
 }
 
 .user:hover {
@@ -65,6 +72,9 @@ export default {
 }
 
 .user__container {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
   height: 90vh;
   flex-grow: 1;
   overflow: hidden;
@@ -72,17 +82,23 @@ export default {
 }
 
 .username {
-  float: left;
+  display: flex;
+  width: 85%;
+  justify-content: left;
+  align-items: center;
+  cursor: pointer;
 }
 
 .userlist__add-to-friend-btn {
-  float: right;
-  width: 15%;
-  height: 100%;
+  margin: 15px auto;
+  width: 10%;
+  height: 60%;
   border: transparent;
+  border-radius: 50%;
   background-color: dodgerblue;
   color: white;
   transition: 150ms ease;
+  outline: none;
 }
 
 .userlist__add-to-friend-btn:hover {
@@ -93,20 +109,20 @@ export default {
 .search-input {
   height: 40px;
   width: 100%;
-  border-top: transparent;
-  border-bottom: 1px solid darkgrey;
-  border-right: 1px solid darkgrey;
+  background: #F5F4F4;
+  border: transparent;
   padding: 20px 15px;
+  margin: 2px 5px 10px 5px;
+  outline: none;
 }
 
 .userslist__header {
   padding: 10px;
-  background-color: dodgerblue;
-  color: white;
   margin: 0;
 }
 
 h3 {
   margin-top: 0;
+  margin-bottom: 2px;
 }
 </style>

@@ -7,6 +7,7 @@ const ErrorResponse = require('../utils/errorResponse')
 dotenv.config()
 
 // GET Получаем список пользователей
+// TODO: Сделать так, что пользователь получал всех, кроме себя самого
 exports.getUsersList = async (req, res, next) => {
     try {
         User.find({}, function (err, users) {
@@ -39,13 +40,14 @@ exports.setUserData = async (req, res, next) => {
             } else if (user) {
                 return next(new ErrorResponse('Username already exists', 409))
             } else {
-                User.findOne({ _id: userId }, async function (err, user) {
-                    if(err) {
+                User.findOne({ _id: userId }, async function (err, user) {if(err) {
                         return next(new ErrorResponse(err, 500))
                     } else if (!user) {
                         return next(new ErrorResponse('Database search error, user not found'))
                     } else {
-                        await user.update({ username: username })
+                        await user.updateOne({ username: username })
+                        log.info('Username successfully changed')
+                        res.status(200).json({ message: 'Username successfully changed' })
                     }
                 })
             }

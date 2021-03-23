@@ -12,7 +12,10 @@ import {
     FORGET_PASSWORD_SUCCESS,
     FORGET_PASSWORD_ERROR,
     RESET_PASSWORD_REQUEST,
-    RESET_PASSWORD_SUCCESS, RESET_PASSWORD_ERROR, CLEAR_RESET_TOKEN
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_ERROR,
+    CLEAR_RESET_TOKEN,
+    UPDATE_USERNAME
 } from "@/store/actions/user.action"
 import API_ENDPOINTS from '../../../config/api.config'
 import { AUTH_LOGOUT } from "@/store/actions/auth.action"
@@ -106,7 +109,7 @@ const actions = {
             commit(CHANGE_DATA_REQUEST)
             instance.post(`${API_ENDPOINTS.BASE_API.SET_USERNAME}`, data)
                 .then(res => {
-                    commit(CHANGE_DATA_SUCCESS)
+                    commit(CHANGE_DATA_SUCCESS, data.username)
                     resolve(res)
                 })
                 .catch(err => {
@@ -129,7 +132,7 @@ const mutations = {
         state.status = 'error'
     },
 
-    [ALL_USERS_SUCCESS]: state => {
+    [ALL_USERS_REQUEST]: state => {
         state.status = 'loading'
     },
     [ALL_USERS_SUCCESS]: (state , users) => {
@@ -164,11 +167,20 @@ const mutations = {
     [CHANGE_DATA_REQUEST]: state => {
         state.status = 'loading'
     },
-    [CHANGE_DATA_SUCCESS]: state => {
+    [CHANGE_DATA_SUCCESS]: (state) => {
         state.status = 'success'
     },
     [CHANGE_DATA_ERROR]: state => {
         state.status = 'error'
+    },
+
+    [CLEAR_RESET_TOKEN]: state => {
+        state.status = 'success'
+    },
+
+    [UPDATE_USERNAME]: (state, username) => {
+        state.status = 'updated'
+        state.session.username = username
     },
 
     [AUTH_LOGOUT]: state => {
