@@ -49,6 +49,7 @@ const actions = {
             instance.post(`${API_ENDPOINTS.BASE_API.REGISTER}`, data)
                 .then(res => {
                     localStorage.setItem('token', res.data.token)
+                    localStorage.setItem('id', res.data.user._id)
                     instance.defaults.headers.common['Authorization'] = res.data.token
                     commit(AUTH_SUCCESS, res.data.token)
                     resolve(res)

@@ -1,11 +1,6 @@
 <template>
   <div class="chatpage">
     <user-list class="user-list"/>
-    <div class="chat">
-      <div class="chat__header">
-        <h3>Chat</h3>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -23,26 +18,16 @@ body {
   overflow: hidden;
 }
 
-.chat {
-  width: 100%;
-  margin: 0;
-}
-
-.chat__header {
-  justify-content: center;
-  padding: 10px 10px;
-  background-color: dodgerblue;
-  margin-left: -2px;
-  color: white;
-}
-
 h3 {
   margin-top: 0;
 }
 
 .chatpage {
   display: flex;
-  height: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
   overflow: hidden;
   overflow-y: scroll;
 }

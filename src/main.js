@@ -3,6 +3,7 @@ import App from './App.vue'
 import VueRouter from "vue-router"
 import Vuelidate from "vuelidate"
 import axios from "axios"
+import animateCSS from 'animate.css/animate.compat.css'
 
 import router from './router/router'
 import store from './store/index'
@@ -18,6 +19,7 @@ if(token) {
 
 Vue.use(Vuelidate)
 Vue.use(VueRouter)
+Vue.use(animateCSS)
 
 new Vue({
     render: h => h(App),
