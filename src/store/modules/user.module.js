@@ -39,7 +39,6 @@ const actions = {
             commit(USER_REQUEST)
             instance.post(`${API_ENDPOINTS.BASE_API.GET_USER_DATA}`, { userId: id })
                 .then(res => {
-                    localStorage.setItem('id', id)
                     commit(USER_SUCCESS, res.data.session)
                     resolve(res)
                 })
