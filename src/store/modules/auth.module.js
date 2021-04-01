@@ -101,6 +101,7 @@ const mutations = {
         state.hasLoadedOnce = true
     },
     [AUTH_LOGOUT]: state => {
+        state.status = 'success'
         state.token = ''
     },
 

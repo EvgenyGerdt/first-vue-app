@@ -20,14 +20,16 @@
             class="authpage__input-container"
             :class="{'error': $v.email.$error}"
         >
-          <input
-              required
-              v-model.trim="email"
-              type="text"
-              class="authpage__input-email"
-              placeholder="EMAIL"
-              @change="setEmail($event.target.value)"
-          >
+          <label>
+            <input
+                required
+                v-model.trim="email"
+                type="text"
+                class="authpage__input-email"
+                placeholder="EMAIL"
+                @change="setEmail($event.target.value)"
+            >
+          </label>
         </div>
         <div class="error" v-if="!$v.email.required && $v.email.$dirty">Please, enter your email</div>
         <div class="error" v-if="!$v.email.email && $v.email.$dirty">Please, enter correct email</div>
@@ -119,9 +121,15 @@ export default {
       let email = this.email
       let password = this.password
       await this.$store.dispatch('AUTH_REQUEST', { email, password })
-          .then(() => {
-            this.authStatus = true
-            this.$router.push('/profile')
+          .then(async () => {
+            await this.$store.dispatch('ALL_USERS_REQUEST')
+                .then(() => {
+                  this.authStatus = true
+                  this.$router.push(`/profile/${this.$store.state.user.id}`)
+                })
+                .catch(err => {
+                  console.log(err)
+                })
           })
           .catch(err => {
             this.authStatus = false
@@ -212,6 +220,7 @@ button:hover {
   font-size: 40px;
   background: transparent;
   color: #d9d9d9
+
 }
 
 .authpage__button-back:hover {

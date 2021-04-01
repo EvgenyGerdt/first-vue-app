@@ -44,15 +44,12 @@ const router = new VueRouter({
             }
         },
         {
-            path: '/profile',
+            path: '/profile/:id',
             component: ProfilePage,
             name: 'profilePage',
-            meta: {
-                requiresAuth: true
-            }
         },
         {
-            path: '/profile/chat',
+            path: '/chat',
             component: ChatPage,
             name: 'chatPage',
             meta: {

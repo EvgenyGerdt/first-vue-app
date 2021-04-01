@@ -4,6 +4,7 @@
       <button
           class="profilepage__logout-btn"
           @click="logout"
+          v-if="isOwner"
       >
         <i class="fas fa-chevron-left"></i> LOGOUT
       </button>
@@ -14,7 +15,7 @@
           </h1>
         </div>
       </div>
-      <div class="profilepage__functional-blocks">
+      <div class="profilepage__functional-blocks" v-if="isOwner">
         <div class="profilepage__edit-user block" @click="toggleEditModal">
           <i class="fas fa-user-edit fa-2x"></i>
         </div>
@@ -32,7 +33,10 @@
           </div>
           <div class="post-body">
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
           </div>
           <div class="post-footer">
@@ -63,7 +67,9 @@ export default {
 
   data() {
     return {
-      isVisibleEditModal: false
+      id: this.$route.params.id,
+      isVisibleEditModal: false,
+      isOwner: null
     }
   },
 
@@ -87,8 +93,11 @@ export default {
   },
 
   created() {
-    let userId = localStorage.getItem('id')
-    this.$store.dispatch('USER_REQUEST', userId)
+    this.isOwner = this.$route.params.id === localStorage.getItem('id')
+  },
+
+  beforeMount() {
+    this.$store.dispatch('USER_REQUEST', this.id)
         .catch((err) => console.log(err))
   },
 
