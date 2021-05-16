@@ -1,4 +1,5 @@
 const User = require('../models/user.model')
+const Message = require('../models/message.model')
 const log = require('../../../config/log4js.config')
 const dotenv = require('dotenv')
 
@@ -7,7 +8,6 @@ const ErrorResponse = require('../utils/errorResponse')
 dotenv.config()
 
 // GET Получаем список пользователей
-// TODO: Сделать так, что пользователь получал всех, кроме себя самого
 exports.getUsersList = async (req, res, next) => {
     try {
         User.find({}, function (err, users) {
@@ -57,3 +57,46 @@ exports.setUserData = async (req, res, next) => {
     }
 }
 
+// POST Отправляем сообщение пользователю
+exports.sendMessage = async (req, res, next) => {
+    const {from, to, messageBody} = req.body
+
+    try {
+        await Message.create({
+            from, to, messageBody
+        })
+
+        log.info('Message has been send successfully!')
+
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        res.status(200).json({success: true})
+    } catch(err) {
+        return next(new ErrorResponse(err.message, 500))
+    }
+}
+
+exports.getMessages = async (req, res, next) => {
+    const { id, owner } = req.body
+
+    try {
+        if(owner) {
+            Message.find({ from: id }, async function(err, messages) {
+                if(err) {
+                    return next(new ErrorResponse(err, 500))
+                } else {
+                    res.status(200).json(messages)
+                }
+            })
+        } else {
+            Message.find({ to: id }, async function(err, messages) {
+                if(err) {
+                    return next(new ErrorResponse(err, 500))
+                } else {
+                    res.status(200).json(messages)
+                }
+            })
+        }
+    } catch(err) {
+        return next(new ErrorResponse(err, 500))
+    }
+}

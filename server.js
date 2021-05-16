@@ -6,11 +6,9 @@ const connectDB = require('./config/db')
 const errorHandler = require('./src/backend/middleware/error.middleware')
 const cors = require('cors')
 
-// TODO: Подобрать удобную библиотеку для чата
 // TODO: Реализовать добавление в друзья
 // TODO: Сделать смену пароля в модальном окне изменения данных пользователя ⚠️
 // TODO: Переверстать окно чата
-// TODO: Разобраться с vue-config для возможности загрузки изображений на проект в стилях
 
 connectDB()
 
