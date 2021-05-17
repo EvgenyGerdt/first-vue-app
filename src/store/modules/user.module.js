@@ -15,7 +15,10 @@ import {
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_ERROR,
     CLEAR_RESET_TOKEN,
-    UPDATE_USERNAME
+    UPDATE_USERNAME,
+    SEND_MESSAGE,
+    SEND_MESSAGE_SUCCESS,
+    SEND_MESSAGE_ERROR, GET_MESSAGES, GET_MESSAGES_SUCCESS, GET_MESSAGES_ERROR
 } from "@/store/actions/user.action"
 import API_ENDPOINTS from '../../../config/api.config'
 import { AUTH_LOGOUT } from "@/store/actions/auth.action"
@@ -25,7 +28,8 @@ const state = {
     status: '',
     session: '',
     users: {},
-    id: localStorage.getItem('id') || ''
+    id: localStorage.getItem('id') || '',
+    messages: {}
 }
 
 const getters = {
@@ -34,10 +38,10 @@ const getters = {
 }
 
 const actions = {
-    [USER_REQUEST]: ({ commit, dispatch }, id) => {
+    [USER_REQUEST]: ({commit, dispatch}, id) => {
         return new Promise((resolve, reject) => {
             commit(USER_REQUEST)
-            instance.post(`${API_ENDPOINTS.BASE_API.GET_USER_DATA}`, { userId: id })
+            instance.post(`${API_ENDPOINTS.BASE_API.GET_USER_DATA}`, {userId: id})
                 .then(res => {
                     commit(USER_SUCCESS, res.data.session)
                     resolve(res)
@@ -50,7 +54,7 @@ const actions = {
         })
     },
 
-    [ALL_USERS_REQUEST]: ({ commit, dispatch }) => {
+    [ALL_USERS_REQUEST]: ({commit, dispatch}) => {
         return new Promise((resolve, reject) => {
             commit(ALL_USERS_REQUEST)
             instance.get(`${API_ENDPOINTS.BASE_API.GET_ALL_USERS}`)
@@ -66,7 +70,7 @@ const actions = {
         })
     },
 
-    [FORGET_PASSWORD_REQUEST]: ({ commit }, email) => {
+    [FORGET_PASSWORD_REQUEST]: ({commit}, email) => {
         return new Promise((resolve, reject) => {
             commit(FORGET_PASSWORD_REQUEST)
             instance.post(`${API_ENDPOINTS.BASE_API.FORGET_PASSWORD}`, email)
@@ -82,7 +86,7 @@ const actions = {
         })
     },
 
-    [RESET_PASSWORD_REQUEST]: ({ commit }, data) => {
+    [RESET_PASSWORD_REQUEST]: ({commit}, data) => {
         return new Promise((resolve, reject) => {
             commit(RESET_PASSWORD_REQUEST)
             instance.post(`${API_ENDPOINTS.BASE_API.RESET_PASSWORD}`, data)
@@ -98,12 +102,12 @@ const actions = {
                 })
         })
     },
-    [CLEAR_RESET_TOKEN]: ({ commit }) => {
+    [CLEAR_RESET_TOKEN]: ({commit}) => {
         commit(CLEAR_RESET_TOKEN)
         localStorage.removeItem('resetToken')
     },
 
-    [CHANGE_DATA_REQUEST]: ({ commit }, data) => {
+    [CHANGE_DATA_REQUEST]: ({commit}, data) => {
         return new Promise((resolve, reject) => {
             commit(CHANGE_DATA_REQUEST)
             instance.post(`${API_ENDPOINTS.BASE_API.SET_USERNAME}`, data)
@@ -113,6 +117,36 @@ const actions = {
                 })
                 .catch(err => {
                     commit(CHANGE_DATA_ERROR)
+                    reject(err)
+                })
+        })
+    },
+
+    [SEND_MESSAGE]: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+            commit(SEND_MESSAGE)
+            instance.post(`${API_ENDPOINTS.BASE_API.SEND_MESSAGE}`, data)
+                .then(res => {
+                    commit(SEND_MESSAGE_SUCCESS)
+                    resolve(res)
+                })
+                .catch(err => {
+                    commit(SEND_MESSAGE_ERROR)
+                    reject(err)
+                })
+        })
+    },
+
+    [GET_MESSAGES]: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+            commit(GET_MESSAGES)
+            instance.post(`${API_ENDPOINTS.BASE_API.GET_MESSAGES}`, data)
+                .then(res => {
+                    commit(GET_MESSAGES_SUCCESS, data)
+                    resolve(res)
+                })
+                .catch(err => {
+                    commit(GET_MESSAGES_ERROR)
                     reject(err)
                 })
         })
@@ -185,6 +219,32 @@ const mutations = {
     [AUTH_LOGOUT]: state => {
         state.session = {}
     },
+
+    [SEND_MESSAGE]: state => {
+        state.status = "sending"
+    },
+
+    [SEND_MESSAGE_SUCCESS]: state => {
+        state.status = "success"
+    },
+
+    [SEND_MESSAGE_ERROR]: state => {
+        state.status = "error"
+    },
+
+    [GET_MESSAGES]: state => {
+        state.status = "loading"
+    },
+
+    [GET_MESSAGES_SUCCESS]: (state, messages) => {
+        state.status = "success"
+        state.messages = messages
+    },
+
+    [GET_MESSAGES_ERROR]: state => {
+        state.status = "error"
+        state.messages = {}
+    }
 }
 
 export default {

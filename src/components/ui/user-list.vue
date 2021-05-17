@@ -23,6 +23,9 @@
           <div class="username" v-if="user" @click="$router.push(`/profile/${user._id}`)">
             {{ name }}
           </div>
+          <button class="userlist__open-chat-btn">
+            <i class="fas fa-envelope"></i>
+          </button>
           <button class="userlist__add-to-friend-btn">
             <i class="fas fa-user-plus"></i>
           </button>
@@ -112,8 +115,9 @@ export default {
   cursor: pointer;
 }
 
-.userlist__add-to-friend-btn {
-  margin: 15px auto;
+.userlist__add-to-friend-btn,
+.userlist__open-chat-btn {
+  margin: 15px 5px;
   min-width: 40px;
   min-height: 40px;
   border: transparent;
@@ -124,7 +128,8 @@ export default {
   outline: none;
 }
 
-.userlist__add-to-friend-btn:hover {
+.userlist__add-to-friend-btn:hover,
+.userlist__open-chat-btn:hover {
   transition: 150ms ease;
   opacity: 0.9;
 }
