@@ -75,27 +75,18 @@ exports.sendMessage = async (req, res, next) => {
     }
 }
 
+// POST получение сообщений
 exports.getMessages = async (req, res, next) => {
-    const { id, owner } = req.body
+    let { id } = req.body
 
     try {
-        if(owner) {
-            Message.find({ from: id }, async function(err, messages) {
-                if(err) {
-                    return next(new ErrorResponse(err, 500))
-                } else {
-                    res.status(200).json(messages)
-                }
-            })
-        } else {
-            Message.find({ to: id }, async function(err, messages) {
-                if(err) {
-                    return next(new ErrorResponse(err, 500))
-                } else {
-                    res.status(200).json(messages)
-                }
-            })
-        }
+        Message.find({$or:[{from: id},{to: id}]}, async function(err, messages) {
+            if(err) {
+                return next(new ErrorResponse(err, 500))
+            } else {
+                res.status(200).json({messages: messages})
+            }
+        })
     } catch(err) {
         return next(new ErrorResponse(err, 500))
     }

@@ -18,12 +18,15 @@
         <div
             class="user"
             v-for="user in filteredUsers"
-            v-bind:key="name = user.username ? user.username : user.email"
+            :key="name = user.username ? user.username : user.email"
         >
           <div class="username" v-if="user" @click="$router.push(`/profile/${user._id}`)">
             {{ name }}
           </div>
-          <button class="userlist__open-chat-btn">
+          <button
+              class="userlist__open-chat-btn"
+              @click="openChat(user._id)"
+          >
             <i class="fas fa-envelope"></i>
           </button>
           <button class="userlist__add-to-friend-btn">
@@ -32,10 +35,17 @@
         </div>
       </div>
     </div>
+    <g-chat-modal
+        v-if="isVisibleChat"
+        @toggle-modal="openChat"
+        :chat-with="chatWith"
+    />
   </div>
 </template>
 
 <script>
+import gChatModal from '@/components/modal/chat-modal'
+
 export default {
   name: "user-list",
   data() {
@@ -43,8 +53,14 @@ export default {
       users: [],
       search: '',
       switchToFriends: false,
-      switchToUsers: true
+      switchToUsers: true,
+      isVisibleChat: false,
+      chatWith: undefined
     }
+  },
+
+  components: {
+    gChatModal
   },
 
   created() {
@@ -74,6 +90,11 @@ export default {
       el.style.borderLeft = '3px solid dodgerblue'
       this.switchToFriends = true
       this.switchToUsers = false
+    },
+
+    openChat(chatId) {
+      this.isVisibleChat = !this.isVisibleChat
+      this.chatWith = chatId
     }
   }
 }
