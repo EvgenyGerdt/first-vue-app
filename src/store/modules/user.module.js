@@ -34,7 +34,8 @@ const state = {
 
 const getters = {
     getUser: state => state.session,
-    isProfileLoaded: state => !!state.session._id
+    isProfileLoaded: state => !!state.session._id,
+    getMessages: state => state.messages
 }
 
 const actions = {
@@ -142,7 +143,7 @@ const actions = {
             commit(GET_MESSAGES)
             instance.post(`${API_ENDPOINTS.BASE_API.GET_MESSAGES}`, data)
                 .then(res => {
-                    commit(GET_MESSAGES_SUCCESS, data)
+                    commit(GET_MESSAGES_SUCCESS, res.data.messages)
                     resolve(res)
                 })
                 .catch(err => {

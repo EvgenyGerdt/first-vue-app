@@ -125,7 +125,7 @@ export default {
             await this.$store.dispatch('ALL_USERS_REQUEST')
                 .then(() => {
                   this.authStatus = true
-                  this.$router.push(`/profile/${this.$store.state.user.id}`)
+                  this.$router.push(`/profile/${localStorage.getItem('id')}`)
                 })
                 .catch(err => {
                   console.log(err)
